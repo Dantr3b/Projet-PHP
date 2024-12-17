@@ -66,20 +66,20 @@ if ($db->connect_error) {
 | **Page**                     | **Description**                           | **Statut**    |
 |------------------------------|-------------------------------------------|---------------|
 | `/home`                      | Page d'accueil, affichage des articles    | 🚧 À faire    |
-| `/register`                  | Page d'inscription                       | ✅ Terminé    |
-| `/login`                     | Page de connexion                        | ✅ Terminé    |
+| `/register`                  | Page d'inscription                       | 🎨 Ajouter du style    |
+| `/login`                     | Page de connexion                        | 🎨 Ajouter du style    |
 | `/catalogue`                 | Liste des articles avec filtres           | 🚧 À faire    |
 | `/detail?id=ID`              | Page détaillée d'un produit               | 🚧 À faire    |
 | `/cart`                      | Affichage et gestion du panier            | 🚧 À faire    |
 | `/cart/validate`             | Validation des informations de commande   | 🚧 À faire    |
 | `/cart/confirmation`         | Confirmation de commande                  | 🚧 À faire    |
 | `/favorites`                 | Liste des articles favoris                | 🚧 À faire    |
-| `/account`                   | Gestion du compte utilisateur             | 🚧 À faire    |
+| `/account`                   | Gestion du compte utilisateur             | 🎨 Ajouter du style    |
 | `/sell`                      | Formulaire de création d'article (vendeur)| 🚧 À faire    |
 | `/edit?id=ID`                | Modification/suppression d'article        | 🚧 À faire    |
 | `/seller/orders`             | Liste des commandes reçues par le vendeur | 🚧 À faire    |
 | `/admin/dashboard`           | Tableau de bord administrateur            | 🚧 À faire    |
-| `/admin/users`               | Gestion des utilisateurs                  | 🚧 À faire    |
+| `/admin/users`               | Gestion des utilisateurs                  | 🎨 Ajouter du style    |
 | `/admin/articles`            | Gestion des articles                      | 🚧 À faire    |
 | `/search`                    | Recherche avancée multi-critères          | 🚧 À faire    |
 | `/giftboxes`                 | Page des coffrets cadeaux                 | 🚧 À faire    |

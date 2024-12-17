@@ -14,11 +14,14 @@ $photo = "";
 
 // Récupération des informations actuelles de l'utilisateur
 $username = $_SESSION['username'];
-$stmt = mysqli_prepare($conn, "SELECT email, photo FROM User WHERE username = ?");
+$stmt = mysqli_prepare($conn, "SELECT email, photo, role FROM User WHERE username = ?");
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
+
+// Récupération du rôle
+$role = $user['role'] ?? 'user'; // Par défaut, 'user' si le rôle n'existe pas
 
 // Mettre à jour le profil
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -27,6 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
     $old_photo = $user['photo'];
+
+    
     
     // Gestion de l'image uploadée
     if (!empty($_FILES['photo']['name'])) {
@@ -132,6 +137,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <button type="submit">Mettre à jour</button>
     </form>
+
+    <?php if ($role === 'admin'): ?>
+            <?php $_SESSION['role'] = $user['role']; ?>
+            <p><a href="admin/users.php">Gestion des utilisateurs</a></p>
+    <?php endif; ?>
 
     <p><a href="logout.php">Se déconnecter</a></p>
 </body>
