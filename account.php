@@ -14,7 +14,7 @@ $photo = "";
 
 // Récupération des informations actuelles de l'utilisateur
 $username = $_SESSION['username'];
-$stmt = mysqli_prepare($conn, "SELECT email, photo, role FROM User WHERE username = ?");
+$stmt = mysqli_prepare($conn, "SELECT email, photo, role, id FROM User WHERE username = ?");
 mysqli_stmt_bind_param($stmt, "s", $username);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -22,6 +22,10 @@ $user = mysqli_fetch_assoc($result);
 
 // Récupération du rôle
 $role = $user['role'] ?? 'user'; // Par défaut, 'user' si le rôle n'existe pas
+$_SESSION['role'] = $user['role']; // Met à jour la session
+
+$id = $user['id']; // Récupère l'ID de l'utilisateur
+$_SESSION['id'] = $id;
 
 // Mettre à jour le profil
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -139,8 +143,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
 
     <?php if ($role === 'admin'): ?>
-            <?php $_SESSION['role'] = $user['role']; ?>
             <p><a href="admin/users.php">Gestion des utilisateurs</a></p>
+    <?php endif; ?>
+
+    <?php if ($role === 'seller'): ?>
+
+        <p><a href="sellers/sell.php">Vendre un article</a></p>
+        <p><a href="sellers/articles.php">Gérer les articles</a></p>
     <?php endif; ?>
 
     <p><a href="logout.php">Se déconnecter</a></p>
