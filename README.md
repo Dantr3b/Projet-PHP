@@ -75,6 +75,7 @@ if ($db->connect_error) {
 | `/cart/confirmation`         | Confirmation de commande                  | 🚧 À faire    |
 | `/favorites`                 | Liste des articles favoris                | 🚧 À faire    |
 | `/account`                   | Gestion du compte utilisateur             | 🎨 Ajouter du style    |
+| `sellers/article`            | Liste des articles proposer par le vendeur| 🎨 Ajouter du style    |
 | `sellers/sell`               | Formulaire de création d'article (vendeur)| 🎨 Ajouter du style    |
 | `/edit?id=ID`                | Modification/suppression d'article        | 🚧 À faire    |
 | `/seller/orders`             | Liste des commandes reçues par le vendeur | 🚧 À faire    |
