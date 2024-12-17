@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (password_verify($password, $row['password'])) {
                 // Connexion réussie : initialiser la session
                 $_SESSION['username'] = $username;
-                header("Location: dashboard.php"); // Rediriger vers la page protégée
+                header("Location: account.php"); // Rediriger vers la page protégée
                 exit();
             } else {
                 $error = "Identifiant ou mot de passe incorrect.";
@@ -44,6 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="text" name="username" placeholder="Nom d'utilisateur" required>
     <input type="password" name="password" placeholder="Mot de passe" required>
     <button type="submit">Se connecter</button>
+    <br>
+    <p>Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous ici</a></p>
 </form>
 
 <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>

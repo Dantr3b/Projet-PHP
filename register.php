@@ -1,5 +1,6 @@
 <?php
-require_once("config.php"); // Inclut les paramètres de connexion à la base de données
+// Inclut les paramètres de connexion à la base de données
+require_once("config.php"); 
 
 $error = "";
 $success = "";
@@ -77,6 +78,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="password" name="confirm_password" id="confirm_password" required><br><br>
 
         <button type="submit">S'inscrire</button>
+        <br>
+
+        <p>Vous avez déjà un compte ? <a href="login.php">Connectez-vous ici
     </form>
 </body>
 </html>
