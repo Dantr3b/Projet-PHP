@@ -44,7 +44,7 @@ Ce projet est un site e-commerce réalisé pour un module PHP, sans framework, a
    ```bash
    git clone https://github.com/votre-utilisateur/votre-projet.git
    cd votre-projet
-   ```bash
+   ```
 
 2. **Créer la base de données** :
    Importer le fichier SQL fourni (php_exam_db.sql) dans phpMyAdmin.
@@ -145,8 +145,8 @@ Le projet utilise une base de données **MySQL** avec les tables suivantes :
 ## **Crédits**
 
 Projet réalisé par :  
-- **[Nom 1]**  
-- **[Nom 2]**  
-- **[Nom 3]**
+- **Arthur Chessé**  
+- **Killian Roux**  
+- **Gabin Rolland-Bertrand**
 
 ---
