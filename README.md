@@ -68,7 +68,7 @@ if ($db->connect_error) {
 | `/home`                      | Page d'accueil, affichage des articles    | 🚧 À faire    |
 | `/register`                  | Page d'inscription                        | ✅ Terminé   |
 | `/login`                     | Page de connexion                         | ✅ Terminé   |
-| `/catalogue`                 | Liste des articles avec filtres           | 🚧 À faire    |
+| `/catalogue`                 | Liste des articles avec filtres           | 🎨 Ajouter du style    |
 | `/detail?id=ID`              | Page détaillée d'un produit               | 🚧 À faire    |
 | `/cart`                      | Affichage et gestion du panier            | 🚧 À faire    |
 | `/cart/validate`             | Validation des informations de commande   | 🚧 À faire    |
