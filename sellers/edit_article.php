@@ -23,11 +23,12 @@ if (!$article = mysqli_fetch_assoc($result)) {
 // Mise à jour
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
+    $description = trim($_POST['description']);
     $price = floatval($_POST['price']);
     $stock = intval($_POST['stock']);
 
-    $update_stmt = mysqli_prepare($conn, "UPDATE article SET name = ?, price = ?, stock = ? WHERE id = ?");
-    mysqli_stmt_bind_param($update_stmt, "sdii", $name, $price, $stock, $article_id);
+    $update_stmt = mysqli_prepare($conn, "UPDATE article SET name = ?,description , price = ?, stock = ? WHERE id = ?");
+    mysqli_stmt_bind_param($update_stmt, "sdii", $name, $description, $price, $stock, $article_id);
     mysqli_stmt_execute($update_stmt);
 
     header("Location: articles.php");
@@ -39,6 +40,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <label>Nom :</label>
     <input type="text" name="name" value="<?php echo htmlspecialchars($article['name']); ?>" required><br>
 
+    <label>Description :</label>
+    <textarea name="description" required><?php echo htmlspecialchars($article['description']); ?></textarea><br>
+
     <label>Prix :</label>
     <input type="number" name="price" step="0.01" value="<?php echo $article['price']; ?>" required><br>
 
@@ -46,5 +50,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <input type="number" name="stock" value="<?php echo $article['stock']; ?>" required><br>
 
     <button type="submit">Modifier</button>
-    <a href="articles.php">Retour</a>
+    <a href="article.php">Retour</a>
 </form>

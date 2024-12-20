@@ -29,7 +29,7 @@ if (isset($_POST['delete_article'])) {
 
 // Récupération des articles du vendeur
 $seller_id = $_SESSION['id'];
-$stmt = mysqli_prepare($conn, "SELECT id, name, price, stock, created_at FROM article WHERE author_id = ?");
+$stmt = mysqli_prepare($conn, "SELECT id, name, description ,price, stock, created_at FROM article WHERE author_id = ?");
 mysqli_stmt_bind_param($stmt, "i", $seller_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -57,6 +57,7 @@ $result = mysqli_stmt_get_result($stmt);
             <tr>
                 <th>ID</th>
                 <th>Nom</th>
+                <th>Description</th>
                 <th>Prix</th>
                 <th>Stock</th>
                 <th>Créé le</th>
@@ -68,6 +69,7 @@ $result = mysqli_stmt_get_result($stmt);
                 <tr>
                     <td><?php echo $article['id']; ?></td>
                     <td><?php echo htmlspecialchars($article['name']); ?></td>
+                    <td><?php echo htmlspecialchars($article['description']); ?></td>
                     <td><?php echo number_format($article['price'], 2); ?> €</td>
                     <td><?php echo $article['stock']; ?></td>
                     <td><?php echo $article['created_at']; ?></td>

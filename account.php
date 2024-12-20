@@ -149,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php if ($role === 'seller'): ?>
 
         <p><a href="sellers/article.php">Vendre un article</a></p>
-        <p><a href="sellers/articles.php">Gérer les articles</a></p>
+        <p><a href="sellers/article.php">Gérer les articles</a></p>
     <?php endif; ?>
 
     <p><a href="logout.php">Se déconnecter</a></p>
