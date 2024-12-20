@@ -51,10 +51,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="fr">
+
+<link rel="stylesheet" href="style/css/register.css">
+
 <head>
     <meta charset="UTF-8">
     <title>Inscription</title>
 </head>
+
+<?php include("navbar.php"); ?>
+
+
 <body>
     <h2>Créer un compte</h2>
 

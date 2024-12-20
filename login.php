@@ -40,6 +40,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!-- Formulaire de connexion -->
+<link rel="stylesheet" href="style/css/login.css">
+
+<?php include("navbar.php"); ?>
+
+<h1>Connexion</h1>
+
 <form method="post" action="login.php">
     <input type="text" name="username" placeholder="Nom d'utilisateur" required>
     <input type="password" name="password" placeholder="Mot de passe" required>

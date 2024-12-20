@@ -1,0 +1,38 @@
+form{
+    margin: auto;
+    width: 30%;
+    padding: 10px;
+    background-color: white;
+    display: grid;
+    text-align: center;
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.2);
+}
+
+input{
+    margin: 2vh 1vw 2vh 1vw;
+    height: 5vh;
+    padding: 5px;
+    border: 0.5px solid black;
+}
+
+button{
+    margin: 2vh 1vw 2vh 1vw;
+    height: 5vh;
+    padding: 5px;
+    border-radius: 2px;
+    border: none;
+    background-color: #510707;
+    color: white;
+    font-weight: bold;
+}   
+
+button:hover{
+    transform: scale(1.01);
+}
+
+
+p{
+    margin: 2vh 1vw 2vh 1vw;
+    font-size: 15px;
+    font-weight: bold;
+}
