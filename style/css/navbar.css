@@ -1,0 +1,25 @@
+body{
+    background-color: #EFEFDA;
+    text-align: center;
+}
+
+
+nav{
+    background-color: #510707;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    margin-bottom: 10vh;
+    border-radius: 10px;
+}
+
+nav a{
+    color: white;
+    text-decoration: none;
+    border: 0.5px solid white;
+    padding: 5px 4px 5px 4px;
+    border-radius: 5px; 
+}
