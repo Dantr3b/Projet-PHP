@@ -127,6 +127,11 @@ if ($stmt) {
         <p>Aucun produit vendu pour le moment.</p>
     <?php endif; ?>
 
+
+    <a href="orders.php">gerer les commandes</a>
+
+    <a href="article.php">gerer les articles</a>
+
     <a href="../account.php">gerer le compte</a>
 
     

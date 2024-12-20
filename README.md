@@ -78,7 +78,7 @@ if ($db->connect_error) {
 | `sellers/article`            | Liste des articles proposer par le vendeur| 🎨 Ajouter du style    |
 | `sellers/sell`               | Formulaire de création d'article (vendeur)| 🎨 Ajouter du style    |
 | `/edit?id=ID`                | Modification/suppression d'article        | 🎨 Ajouter du style    |
-| `/seller/orders`             | Liste des commandes reçues par le vendeur | 🚧 À faire    |
+| `/seller/orders`             | Liste des commandes reçues par le vendeur | 🎨 Ajouter du style    |
 | `/seller/dashboard`          | Tableau de bord administrateur            | 🎨 Ajouter du style    |
 | `/admin/dashboard`           | Tableau de bord administrateur            | 🚧 À faire    |
 | `/admin/users`               | Gestion des utilisateurs                  | 🎨 Ajouter du style    |
