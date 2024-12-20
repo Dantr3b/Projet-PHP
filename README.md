@@ -69,8 +69,8 @@ if ($db->connect_error) {
 | `/register`                  | Page d'inscription                        | ✅ Terminé   |
 | `/login`                     | Page de connexion                         | ✅ Terminé   |
 | `/catalogue`                 | Liste des articles avec filtres           | 🎨 Ajouter du style    |
-| `/detail?id=ID`              | Page détaillée d'un produit               | 🚧 À faire    |
-| `/cart`                      | Affichage et gestion du panier            | 🚧 À faire    |
+| `/detail?id=ID`              | Page détaillée d'un produit               | 🎨 Ajouter du style     |
+| `/cart`                      | Affichage et gestion du panier            | 🚧 en cours    |
 | `/cart/validate`             | Validation des informations de commande   | 🚧 À faire    |
 | `/cart/confirmation`         | Confirmation de commande                  | 🚧 À faire    |
 | `/favorites`                 | Liste des articles favoris                | 🚧 À faire    |

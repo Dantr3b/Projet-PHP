@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (password_verify($password, $row['password'])) {
                 // Connexion réussie : initialiser la session
                 $_SESSION['username'] = $username;
+                $_SESSION['cart'] = [];
                 header("Location: account.php"); // Rediriger vers la page protégée
                 exit();
             } else {
