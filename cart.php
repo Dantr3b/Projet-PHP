@@ -17,3 +17,19 @@ if ($user_id <= 0) {
 
 // Récupération des détails de l'article
 displayCart();
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panier</title>
+</head>
+<body>
+    <a href="cart/validate.php">valider le panier</a>
+    <br>
+    <a href="javascript:history.back()">Retour</a>
+</body>
+</html>
