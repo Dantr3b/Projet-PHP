@@ -71,7 +71,7 @@ if ($db->connect_error) {
 | `/catalogue`                 | Liste des articles avec filtres           | 🎨 Ajouter du style    |
 | `/detail?id=ID`              | Page détaillée d'un produit               | 🎨 Ajouter du style     |
 | `/cart`                      | Affichage et gestion du panier            | 🚧 en cours    |
-| `/cart/validate`             | Validation des informations de commande   | 🚧 À faire    |
+| `/cart/validate`             | Validation des informations de commande   | 🚧 en cours    |
 | `/cart/confirmation`         | Confirmation de commande                  | 🚧 À faire    |
 | `/favorites`                 | Liste des articles favoris                | 🚧 À faire    |
 | `/account`                   | Gestion du compte utilisateur             | 🎨 Ajouter du style    |
