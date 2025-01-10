@@ -66,19 +66,18 @@ if ($db->connect_error) {
 | **Page**                     | **Description**                           | **Statut**    |
 |------------------------------|-------------------------------------------|---------------|
 | `/home`                      | Page d'accueil, affichage des articles    | 🚧 À faire    |
-| `/register`                  | Page d'inscription                       | 🎨 Ajouter du style    |
-| `/login`                     | Page de connexion                        | 🎨 Ajouter du style    |
-| `/catalogue`                 | Liste des articles avec filtres           | 🚧 À faire    |
-| `/detail?id=ID`              | Page détaillée d'un produit               | 🚧 À faire    |
-| `/cart`                      | Affichage et gestion du panier            | 🚧 À faire    |
-| `/cart/validate`             | Validation des informations de commande   | 🚧 À faire    |
-| `/cart/confirmation`         | Confirmation de commande                  | 🚧 À faire    |
+| `/register`                  | Page d'inscription                        | ✅ Terminé   |
+| `/login`                     | Page de connexion                         | ✅ Terminé   |
+| `/catalogue`                 | Liste des articles avec filtres           | 🎨 Ajouter du style    |
+| `/detail?id=ID`              | Page détaillée d'un produit               | 🎨 Ajouter du style     |
+| `/cart`                      | Affichage et gestion du panier            | 🚧 en cours    |
+| `/cart/validate`             | Validation des informations de commande   | 🚧 en cours    |
 | `/favorites`                 | Liste des articles favoris                | 🚧 À faire    |
 | `/account`                   | Gestion du compte utilisateur             | 🎨 Ajouter du style    |
 | `sellers/article`            | Liste des articles proposer par le vendeur| 🎨 Ajouter du style    |
 | `sellers/sell`               | Formulaire de création d'article (vendeur)| 🎨 Ajouter du style    |
 | `/edit?id=ID`                | Modification/suppression d'article        | 🎨 Ajouter du style    |
-| `/seller/orders`             | Liste des commandes reçues par le vendeur | 🚧 À faire    |
+| `/seller/orders`             | Liste des commandes reçues par le vendeur | 🎨 Ajouter du style    |
 | `/seller/dashboard`          | Tableau de bord administrateur            | 🎨 Ajouter du style    |
 | `/admin/dashboard`           | Tableau de bord administrateur            | 🚧 À faire    |
 | `/admin/users`               | Gestion des utilisateurs                  | 🎨 Ajouter du style    |
