@@ -73,7 +73,7 @@ if ($db->connect_error) {
 | `/cart`                      | Affichage et gestion du panier            | 🚧 en cours    |
 | `/cart/validate`             | Validation des informations de commande   | 🚧 en cours    |
 | `/favorites`                 | Liste des articles favoris                | 🚧 À faire    |
-| `/account`                   | Gestion du compte utilisateur             | 🎨 Ajouter du style    |
+| `/account`                   | Gestion du compte utilisateur             | ✅ Terminé    |
 | `sellers/article`            | Liste des articles proposer par le vendeur| 🎨 Ajouter du style    |
 | `sellers/sell`               | Formulaire de création d'article (vendeur)| 🎨 Ajouter du style    |
 | `/edit?id=ID`                | Modification/suppression d'article        | 🎨 Ajouter du style    |
