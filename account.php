@@ -108,7 +108,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Modifier votre profil</title>
+    <link rel="stylesheet" href="style/css/account.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pattaya&display=swap" rel="stylesheet">
 </head>
+
+<header>
+    <?php include("navbar.php"); ?>
+</header>
+
 <body>
     <h2>Modifier votre profil</h2>
 
