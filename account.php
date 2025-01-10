@@ -128,27 +128,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php endif; ?>
 
     <form method="post" action="account.php" enctype="multipart/form-data">
-        <label for="username">Nom d'utilisateur :</label><br>
-        <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username'] ?? $_SESSION['username']); ?>" required><br><br>
 
-        <label for="email">Adresse e-mail :</label><br>
-        <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required><br><br>
+        <div class="container-part1">
+            <div class="part1">
+                
+                <img src="style/images/user.svg" alt="Avatar" class="avatar">
+                <input type="file" name="photo" id="photo"><br><br>
 
-        <label for="password">Nouveau mot de passe (laisser vide si inchangé) :</label><br>
-        <input type="password" name="password" id="password"><br><br>
+                <?php if (!empty($user['photo'])): ?>
+                    <p>Photo actuelle :</p>
+                    <img src="uploads/<?php echo htmlspecialchars($user['photo']); ?>" width="100" alt="Photo de profil">
+                <?php endif; ?>
+            </div>
+        </div>
 
-        <label for="confirm_password">Confirmer le mot de passe :</label><br>
-        <input type="password" name="confirm_password" id="confirm_password"><br><br>
+        <div class="container-part2">
+            <div class="part2">
+                <label for="FirstName">Prénom :</label><br>
+                <input type="text" name="FirstName" id="FirstName"><br><br>
 
-        <label for="photo">Photo de profil (JPG, JPEG, PNG, GIF) :</label><br>
-        <input type="file" name="photo" id="photo"><br><br>
+                <label for="email">Adresse e-mail :</label><br>
+                <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required><br><br>
 
-        <?php if (!empty($user['photo'])): ?>
-            <p>Photo actuelle :</p>
-            <img src="uploads/<?php echo htmlspecialchars($user['photo']); ?>" width="100" alt="Photo de profil">
-        <?php endif; ?>
+                <label for="password">Nouveau mot de passe (laisser vide si inchangé) :</label><br>
+                <input type="password" name="password" id="password"><br><br>
+            </div>
 
-        <button type="submit">Mettre à jour</button>
+            <div class="part3">
+                <label for="LastName">Nom :</label><br>
+                <input type="text" name="LastName" id="LastName"><br><br>
+
+                <label for="username">Nom d'utilisateur :</label><br>
+                <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username'] ?? $_SESSION['username']); ?>" required><br><br>
+
+                <label for="confirm_password">Confirmer le mot de passe :</label><br>
+                <input type="password" name="confirm_password" id="confirm_password"><br><br>
+            </div>
+        </div>
+
+        <div class="container-part3">
+            <button type="submit">Mettre à jour</button>
+        </div>
     </form>
 
     <?php if ($role === 'admin'): ?>
@@ -159,7 +179,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <p><a href="sellers/dashboard.php">Acceder au dashboard</a></p>
     <?php endif; ?>
-
-    <p><a href="logout.php">Se déconnecter</a></p>
 </body>
 </html>

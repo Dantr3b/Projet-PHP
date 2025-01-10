@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="password" name="password" placeholder="Mot de passe" required>
         <button type="submit">Se connecter</button>
         <br>
-        <p>Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous ici</a></p>
+        <p>Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous</a></p>
     </form>
 
 
