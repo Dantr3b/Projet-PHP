@@ -14,7 +14,6 @@ form{
 
 
 .container-part1{
-    border: 1px solid black;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -23,6 +22,10 @@ form{
 
 .part1{
     width: 100%;
+}
+
+.avatar{
+    width: 20%;
 }
 
 .container-part2{
@@ -49,6 +52,12 @@ form{
     display: flex;
     flex-direction: row;
     width: 100%;
+    justify-content: center;
+}
+
+label{
+    margin: 0;
+    font-weight: bold;
 }
 
 input{
@@ -60,7 +69,7 @@ input{
 button{
     margin: 2vh 1vw 2vh 1vw;
     height: 5vh;
-    padding: 5px;
+    padding: 5px 10px 5px 10px;
     border-radius: 2px;
     border: none;
     background-color: #510707;

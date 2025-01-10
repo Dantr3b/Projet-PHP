@@ -119,20 +119,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </header>
 
 <body>
-    <h2>Modifier votre profil</h2>
-
     <?php if (!empty($error)): ?>
         <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
     <?php elseif (!empty($success)): ?>
         <p style="color: green;"><?php echo htmlspecialchars($success); ?></p>
     <?php endif; ?>
 
+    <h1></h1>
+
     <form method="post" action="account.php" enctype="multipart/form-data">
 
         <div class="container-part1">
             <div class="part1">
-                
-                <img src="style/images/user.svg" alt="Avatar" class="avatar">
+                <img src="style/images/user.svg" alt="Avatar" class="avatar">   
                 <input type="file" name="photo" id="photo"><br><br>
 
                 <?php if (!empty($user['photo'])): ?>
