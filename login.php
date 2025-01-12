@@ -41,18 +41,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!-- Formulaire de connexion -->
-<link rel="stylesheet" href="style/css/login.css">
 
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="style/css/login.css">
+</head>
 <?php include("navbar.php"); ?>
+<body>
+    <h1>Connexion</h1>
 
-<h1>Connexion</h1>
+    <form method="post" action="login.php">
+        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+        <input type="password" name="password" placeholder="Mot de passe" required>
+        <button type="submit">Se connecter</button>
+        <br>
+        <p>Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous</a></p>
+    </form>
 
-<form method="post" action="login.php">
-    <input type="text" name="username" placeholder="Nom d'utilisateur" required>
-    <input type="password" name="password" placeholder="Mot de passe" required>
-    <button type="submit">Se connecter</button>
-    <br>
-    <p>Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous ici</a></p>
-</form>
+
+</body>
+</html>
 
 <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
