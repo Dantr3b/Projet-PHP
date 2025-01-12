@@ -150,7 +150,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <p><a href="sellers/dashboard.php">Acceder au dashboard</a></p>
     <?php endif; ?>
-
+    
+    <p><a href="favorites.php">Favoris</p>
     <p><a href="logout.php">Se déconnecter</a></p>
 </body>
 </html>
