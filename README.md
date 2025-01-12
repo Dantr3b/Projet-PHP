@@ -81,7 +81,7 @@ if ($db->connect_error) {
 | `/seller/dashboard`          | Tableau de bord administrateur            | 🎨 Ajouter du style    |
 | `/admin/dashboard`           | Tableau de bord administrateur            | 🚧 À faire    |
 | `/admin/users`               | Gestion des utilisateurs                  | 🎨 Ajouter du style    |
-| `/admin/articles`            | Gestion des articles                      | 🚧 À faire    |
+| `/admin/articles`            | Gestion des articles                      | 🚧 Ajouter du style    |
 | `/search`                    | Recherche avancée multi-critères          | 🚧 À faire    |
 | `/giftboxes`                 | Page des coffrets cadeaux                 | 🚧 À faire    |
 | `/contact`                   | Formulaire de contact                     | 🚧 À faire    |
