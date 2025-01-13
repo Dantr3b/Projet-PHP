@@ -65,14 +65,14 @@ if ($db->connect_error) {
 
 | **Page**                     | **Description**                           | **Statut**    |
 |------------------------------|-------------------------------------------|---------------|
-| `/home`                      | Page d'accueil, affichage des articles    | 🚧 À faire    |
+| `/home`                      | Page d'accueil, affichage des articles    | 🎨 Ajouter du style    |
 | `/register`                  | Page d'inscription                        | ✅ Terminé   |
 | `/login`                     | Page de connexion                         | ✅ Terminé   |
 | `/catalogue`                 | Liste des articles avec filtres           | 🎨 Ajouter du style    |
 | `/detail?id=ID`              | Page détaillée d'un produit               | 🎨 Ajouter du style     |
 | `/cart`                      | Affichage et gestion du panier            | 🚧 en cours    |
 | `/cart/validate`             | Validation des informations de commande   | 🚧 en cours    |
-| `/favorites`                 | Liste des articles favoris                | 🚧 À faire    |
+| `/favorites`                 | Liste des articles favoris                | 🎨 Ajouter du style    |
 | `/account`                   | Gestion du compte utilisateur             | ✅ Terminé    |
 | `sellers/article`            | Liste des articles proposer par le vendeur| 🎨 Ajouter du style    |
 | `sellers/sell`               | Formulaire de création d'article (vendeur)| 🎨 Ajouter du style    |
@@ -81,7 +81,7 @@ if ($db->connect_error) {
 | `/seller/dashboard`          | Tableau de bord administrateur            | 🎨 Ajouter du style    |
 | `/admin/dashboard`           | Tableau de bord administrateur            | 🚧 À faire    |
 | `/admin/users`               | Gestion des utilisateurs                  | 🎨 Ajouter du style    |
-| `/admin/articles`            | Gestion des articles                      | 🚧 À faire    |
+| `/admin/articles`            | Gestion des articles                      | 🚧 Ajouter du style    |
 | `/search`                    | Recherche avancée multi-critères          | 🚧 À faire    |
 | `/giftboxes`                 | Page des coffrets cadeaux                 | 🚧 À faire    |
 | `/contact`                   | Formulaire de contact                     | 🚧 À faire    |
