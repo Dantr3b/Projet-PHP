@@ -1,5 +1,5 @@
 <?php
-require_once("../config.php"); // Connexion à la base de données
+require_once("../config.php");
 session_start();
 
 // Vérification du rôle admin
@@ -11,6 +11,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 // Initialisation des variables
 $search = isset($_GET['search']) ? trim($_GET['search']) : "";
 $role_filter = isset($_GET['role']) ? trim($_GET['role']) : "";
+$success = "";
 
 // Suppression d'un utilisateur
 if (isset($_POST['delete_user'])) {
@@ -50,66 +51,85 @@ $result = mysqli_stmt_get_result($stmt);
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion des utilisateurs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h2>Gestion des utilisateurs</h2>
+    <!-- Navbar -->
+    <?php include("../navbar.php"); ?>
 
-    <!-- Formulaire de recherche et filtre -->
-    <form method="get" action="users.php">
-        <label for="search">Rechercher par nom :</label>
-        <input type="text" name="search" id="search" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($search); ?>">
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Gestion des utilisateurs</h1>
 
-        <label for="role">Filtrer par rôle :</label>
-        <select name="role" id="role">
-            <option value="">Tous</option>
-            <option value="user" <?php echo $role_filter == 'user' ? 'selected' : ''; ?>>User</option>
-            <option value="seller" <?php echo $role_filter == 'seller' ? 'selected' : ''; ?>>Seller</option>
-            <option value="admin" <?php echo $role_filter == 'admin' ? 'selected' : ''; ?>>Admin</option>
-        </select>
+        <!-- Message de succès -->
+        <?php if (!empty($success)): ?>
+            <div class="alert alert-success">
+                <?php echo htmlspecialchars($success); ?>
+            </div>
+        <?php endif; ?>
 
-        <button type="submit">Rechercher</button>
-    </form>
+        <!-- Formulaire de recherche et de filtre -->
+        <form method="get" class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label for="search" class="form-label">Rechercher par nom</label>
+                <input type="text" name="search" id="search" class="form-control" placeholder="Nom d'utilisateur" value="<?php echo htmlspecialchars($search); ?>">
+            </div>
+            <div class="col-md-4">
+                <label for="role" class="form-label">Filtrer par rôle</label>
+                <select name="role" id="role" class="form-select">
+                    <option value="">Tous</option>
+                    <option value="user" <?php echo $role_filter == 'user' ? 'selected' : ''; ?>>User</option>
+                    <option value="seller" <?php echo $role_filter == 'seller' ? 'selected' : ''; ?>>Seller</option>
+                    <option value="admin" <?php echo $role_filter == 'admin' ? 'selected' : ''; ?>>Admin</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-dark w-100">Rechercher</button>
+            </div>
+        </form>
 
-    <!-- Message de succès -->
-    <?php if (!empty($success)): ?>
-        <p style="color: green;"><?php echo htmlspecialchars($success); ?></p>
-    <?php endif; ?>
+        <!-- Tableau des utilisateurs -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($user = mysqli_fetch_assoc($result)): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($user['id']); ?></td>
+                            <td><?php echo htmlspecialchars($user['username']); ?></td>
+                            <td><?php echo htmlspecialchars($user['email']); ?></td>
+                            <td><?php echo htmlspecialchars($user['role']); ?></td>
+                            <td>
+                                <div class="d-flex">
+                                    <!-- Lien pour modifier -->
+                                    <a href="edit_user.php?id=<?php echo $user['id']; ?>" class="btn btn-primary me-2">Modifier</a>
+                                    <!-- Formulaire pour supprimer -->
+                                    <form method="post" action="users.php" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                                        <button type="submit" name="delete_user" class="btn btn-danger">Supprimer</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
 
-    <!-- Tableau des utilisateurs -->
-    <table border="1" cellpadding="10">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom d'utilisateur</th>
-                <th>Email</th>
-                <th>Rôle</th>
-                <th>Solde</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($user = mysqli_fetch_assoc($result)): ?>
-                <tr>
-                    <td><?php echo $user['id']; ?></td>
-                    <td><?php echo htmlspecialchars($user['username']); ?></td>
-                    <td><?php echo htmlspecialchars($user['email']); ?></td>
-                    <td><?php echo htmlspecialchars($user['role']); ?></td>
-                    <td><?php echo number_format($user['balance'], 2); ?> €</td>
-                    <td>
-                        <!-- Lien pour modifier -->
-                        <a href="edit_user.php?id=<?php echo $user['id']; ?>">Modifier</a>
-                        <!-- Formulaire pour supprimer -->
-                        <form method="post" action="users.php" style="display:inline;">
-                            <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                            <button type="submit" name="delete_user" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+        <div class="text-center mt-4">
+            <a href="../account.php" class="btn btn-secondary">Retour au profil</a>
+        </div>
+    </div>
 
-    <p><a href="../account.php">Retour au profil</a></p>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

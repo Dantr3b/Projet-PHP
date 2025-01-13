@@ -81,88 +81,99 @@ $articles = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 mysqli_stmt_close($stmt);
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collection d'articles</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px; /* Ajustez selon la hauteur de la navbar */
+        }
+    </style>
 </head>
 <body>
-    <h2>Collection d'articles</h2>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Cave d'Exception</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Basculer la navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="collection.php">Catalogue</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.php">Panier</a></li>
+                    <li class="nav-item"><a class="nav-link" href="account.php">Mon Profil</a></li>
+                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'seller'): ?>
+                        <li class="nav-item"><a class="nav-link" href="sellers/dashboard.php">Dashboard</a></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Formulaire de recherche et de filtres -->
-    <form method="get" action="collection.php">
-        <label for="search">Rechercher par nom :</label>
-        <input type="text" name="search" id="search" placeholder="Nom de l'article" value="<?php echo htmlspecialchars($search); ?>"><br><br>
+    <div class="container my-5">
+        <h1 class="text-center">Catalogue des Vins</h1>
+        <p class="text-center text-muted">Explorez notre collection des meilleurs vins et spiritueux.</p>
 
-        <label for="category">Catégorie :</label>
-        <select name="category" id="category">
-            <option value="">-- Toutes les catégories --</option>
-            <?php foreach ($categories as $category): ?>
-                <option value="<?php echo htmlspecialchars($category); ?>" <?php echo $category_filter == $category ? 'selected' : ''; ?>>
-                    <?php echo ucfirst(htmlspecialchars($category)); ?>
-                </option>
-            <?php endforeach; ?>
-        </select><br><br>
+        <!-- Formulaire de recherche -->
+        <form class="row g-3 my-4" method="get" action="collection.php">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="search" placeholder="Recherche par nom" value="<?php echo htmlspecialchars($search); ?>">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" name="category">
+                    <option value="">-- Toutes les catégories --</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?php echo htmlspecialchars($category); ?>" <?php echo $category_filter == $category ? 'selected' : ''; ?>>
+                            <?php echo ucfirst(htmlspecialchars($category)); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="region" placeholder="Région (ex: Bordeaux)" value="<?php echo htmlspecialchars($region_filter); ?>">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-dark w-100">Rechercher</button>
+            </div>
+        </form>
 
-        <label for="region">Région :</label>
-        <input type="text" name="region" id="region" placeholder="Exemple : Bordeaux" value="<?php echo htmlspecialchars($region_filter); ?>"><br><br>
-
-        <label for="min_price">Prix minimum :</label>
-        <input type="number" name="min_price" id="min_price" step="0.01" value="<?php echo htmlspecialchars($min_price); ?>"><br><br>
-
-        <label for="max_price">Prix maximum :</label>
-        <input type="number" name="max_price" id="max_price" step="0.01" value="<?php echo htmlspecialchars($max_price); ?>"><br><br>
-
-        <label for="vintage">Année :</label>
-        <input type="number" name="vintage" id="vintage" min="1900" max="<?php echo date('Y'); ?>" value="<?php echo htmlspecialchars($vintage_filter ?? ""); ?>"><br><br>
-
-        <button type="submit">Rechercher</button>
-        <a href="collection.php">Réinitialiser</a>
-    </form>
-
-    <hr>
-
-    <!-- Affichage des articles -->
-    <?php if (!empty($articles)): ?>
-        <table border="1" cellpadding="10">
-            <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Description</th>
-                    <th>Prix</th>
-                    <th>Catégorie</th>
-                    <th>Année</th>
-                    <th>Région</th>
-                    <th>Image</th>
-                </tr>
-            </thead>
-            <tbody>
+        <!-- Affichage des articles -->
+        <div class="row">
+            <?php if (!empty($articles)): ?>
                 <?php foreach ($articles as $article): ?>
-                    <tr>
-                        <td>
-                            <a href="detail.php?id=<?php echo $article['id']; ?>">
-                                <?php echo htmlspecialchars($article['name'] ?? ""); ?>
-                            </a>
-                        </td>
-                        <td><?php echo htmlspecialchars(substr($article['description'] ?? "", 0, 50)) . '...'; ?></td>
-                        <td><?php echo number_format($article['price'], 2); ?> €</td>
-                        <td><?php echo htmlspecialchars($article['category'] ?? ""); ?></td>
-                        <td><?php echo htmlspecialchars($article['vintage'] ?? ""); ?></td>
-                        <td><?php echo htmlspecialchars($article['region'] ?? ""); ?></td>
-                        <td>
-                            <a href="detail.php?id=<?php echo $article['id']; ?>">
-                                <img src="<?php echo htmlspecialchars(str_replace('../', '', $article['image'] ?? "")); ?>" alt="<?php echo htmlspecialchars($article['name'] ?? ""); ?>" width="100">
-                            </a>
-                        </td>
-                    </tr>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <?php 
+                            $imagePath = !empty($article['image']) ? htmlspecialchars(str_replace('../', '', $article['image'])) : 'path/to/default-image.jpg';
+                            ?>
+                            <img src="<?php echo $imagePath; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($article['name']); ?>">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($article['name']); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars(substr($article['description'], 0, 50)) . '...'; ?></p>
+                                <p class="card-text"><strong><?php echo number_format($article['price'], 2); ?> €</strong></p>
+                                <a href="detail.php?id=<?php echo $article['id']; ?>" class="btn btn-dark">Voir le détail</a>
+                            </div>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-            </tbody>
+            <?php else: ?>
+                <p class="text-center">Aucun article trouvé.</p>
+            <?php endif; ?>
+        </div>
+    </div>
 
-        </table>
-    <?php else: ?>
-        <p>Aucun article trouvé.</p>
-    <?php endif; ?>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>&copy; 2025 Cave d'Exception. Tous droits réservés.</p>
+    </footer>
+
+    <!-- JavaScript de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

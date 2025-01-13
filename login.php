@@ -1,6 +1,6 @@
 <?php
 // Inclut la connexion à la base de données
-require_once("config.php"); 
+require_once("config.php");
 
 session_start();
 
@@ -40,30 +40,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<!-- Formulaire de connexion -->
-
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="stylesheet" href="style/css/login.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<?php include("navbar.php"); ?>
-<body>
-    <h1>Connexion</h1>
 
-    <form method="post" action="login.php">
-        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
-        <button type="submit">Se connecter</button>
-        <br>
-        <p>Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous</a></p>
-    </form>
+<body class="bg-light">
+    <!-- Navbar -->
+    <?php include("navbar.php"); ?>
 
+    <!-- Conteneur principal -->
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
+            <h2 class="text-center mb-4">Connexion</h2>
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-danger text-center"><?php echo $error; ?></div>
+            <?php endif; ?>
 
+            <form method="post" action="login.php">
+                <!-- Champ Nom d'utilisateur -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Votre nom d'utilisateur" required>
+                </div>
+
+                <!-- Champ Mot de passe -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Votre mot de passe" required>
+                </div>
+
+                <!-- Bouton de connexion -->
+                <button type="submit" class="btn btn-dark w-100">Se connecter</button>
+            </form>
+
+            <p class="text-center mt-3">Vous n'avez pas de compte ? <a href="register.php">Inscrivez-vous</a></p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
 
-<?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
+</html>

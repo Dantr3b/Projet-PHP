@@ -35,8 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_password = trim($_POST['confirm_password']);
     $old_photo = $user['photo'];
 
-    
-    
     // Gestion de l'image uploadée
     if (!empty($_FILES['photo']['name'])) {
         $photo_name = basename($_FILES['photo']['name']);
@@ -78,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $types .= "s";
             $params[] = $hashed_password;
         }
-        
+
         if ($photo) {
             $update_query .= ", photo = ?";
             $types .= "s";
@@ -102,81 +100,91 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Modifier votre profil</title>
-    <link rel="stylesheet" href="style/css/account.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pattaya&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover; /* Assure que l'image reste proportionnée */
+        }
+    </style>
 </head>
 
-<header>
-    <?php include("navbar.php"); ?>
-</header>
-
 <body>
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
-    <?php elseif (!empty($success)): ?>
-        <p style="color: green;"><?php echo htmlspecialchars($success); ?></p>
-    <?php endif; ?>
+    <?php include("navbar.php"); ?>
 
-    <h1></h1>
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Mon Profil</h2>
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+        <?php elseif (!empty($success)): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <?php endif; ?>
 
-    <form method="post" action="account.php" enctype="multipart/form-data">
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <form method="post" action="account.php" enctype="multipart/form-data">
+                    <!-- Photo de profil -->
+                    <div class="mb-3 text-center">
+                        <?php if (!empty($user['photo'])): ?>
+                            <img src="uploads/<?php echo htmlspecialchars($user['photo']); ?>" 
+                                 alt="Photo de profil" 
+                                 class="profile-picture">
+                        <?php else: ?>
+                            <img src="style/images/user.svg" 
+                                 alt="Avatar" 
+                                 class="profile-picture">
+                        <?php endif; ?>
+                        <div class="mt-2">
+                            <label for="photo" class="form-label">Changer de photo :</label>
+                            <input type="file" name="photo" id="photo" class="form-control">
+                        </div>
+                    </div>
 
-        <div class="container-part1">
-            <div class="part1">
-                <img src="style/images/user.svg" alt="Avatar" class="avatar">   
-                <input type="file" name="photo" id="photo"><br><br>
+                    <!-- Informations utilisateur -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" name="username" id="username" class="form-control" 
+                               value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Adresse e-mail</label>
+                        <input type="email" name="email" id="email" class="form-control" 
+                               value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Nouveau mot de passe (laisser vide si inchangé)</label>
+                        <input type="password" name="password" id="password" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control">
+                    </div>
 
-                <?php if (!empty($user['photo'])): ?>
-                    <p>Photo actuelle :</p>
-                    <img src="uploads/<?php echo htmlspecialchars($user['photo']); ?>" width="100" alt="Photo de profil">
-                <?php endif; ?>
+                    <button type="submit" class="btn btn-dark w-100">Mettre à jour</button>
+                </form>
             </div>
         </div>
 
-        <div class="container-part2">
-            <div class="part2">
-                <label for="FirstName">Prénom :</label><br>
-                <input type="text" name="FirstName" id="FirstName"><br><br>
+        <!-- Liens spécifiques selon le rôle -->
+        <div class="text-center mt-4">
+            <?php if ($role === 'admin'): ?>
+                <a href="admin/users.php" class="btn btn-primary">Gestion des utilisateurs</a>
+            <?php endif; ?>
 
-                <label for="email">Adresse e-mail :</label><br>
-                <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required><br><br>
-
-                <label for="password">Nouveau mot de passe (laisser vide si inchangé) :</label><br>
-                <input type="password" name="password" id="password"><br><br>
-            </div>
-
-            <div class="part3">
-                <label for="LastName">Nom :</label><br>
-                <input type="text" name="LastName" id="LastName"><br><br>
-
-                <label for="username">Nom d'utilisateur :</label><br>
-                <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username'] ?? $_SESSION['username']); ?>" required><br><br>
-
-                <label for="confirm_password">Confirmer le mot de passe :</label><br>
-                <input type="password" name="confirm_password" id="confirm_password"><br><br>
-            </div>
+            <?php if ($role === 'seller'): ?>
+                <a href="sellers/dashboard.php" class="btn btn-secondary">Accéder au Dashboard</a>
+            <?php endif; ?>
         </div>
+    </div>
 
-        <div class="container-part3">
-            <button type="submit">Mettre à jour</button>
-        </div>
-    </form>
-
-    <?php if ($role === 'admin'): ?>
-            <p><a href="admin/users.php">Gestion des utilisateurs</a></p>
-    <?php endif; ?>
-
-    <?php if ($role === 'seller'): ?>
-
-        <p><a href="sellers/dashboard.php">Acceder au dashboard</a></p>
-    <?php endif; ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

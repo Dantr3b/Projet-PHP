@@ -1,139 +1,177 @@
-<?php 
-require_once("../config.php"); // Connexion à la base de données
+<?php
 session_start();
+require_once("../config.php");
 
-// Vérification de l'authentification et du rôle "seller"
+// Vérification si l'utilisateur est connecté et est un "seller"
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'seller') {
     header("Location: ../login.php");
     exit();
 }
 
-// Récupération de l'ID de l'acheteur (par exemple via une URL ou un formulaire)
-$buyer_id = $_SESSION['id'];
+$seller_id = $_SESSION['id']; // ID du vendeur connecté
 
-if ($buyer_id > 0) {
-    // Requête SQL pour récupérer le total des produits vendus
-    $sql = "SELECT SUM(quantity) AS total_products_sold FROM `order` WHERE seller_id = ?;";
-    $stmt = mysqli_prepare($conn, $sql);
+// Initialisation des variables pour le tableau de bord
+$total_products_sold = 0;
+$most_ordered_article_name = "Aucun produit";
+$most_ordered_quantity = 0;
+$highest_revenue_article_name = "Aucun produit";
+$highest_revenue_total = 0;
+$total_revenue = 0;
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "i", $buyer_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+// Calcul du total des produits vendus et du revenu total
+$query = "
+    SELECT 
+        SUM(o.quantity) AS total_quantity,
+        SUM(o.total_price) AS total_revenue
+    FROM `order` o
+    JOIN article a ON o.article_id = a.id
+    WHERE a.author_id = ?";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "i", $seller_id);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $total_products_sold, $total_revenue);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
 
-        // Récupération du résultat
-        $row = mysqli_fetch_assoc($result);
-        $total_products_sold = $row['total_products_sold'] ?? 0;
+// Récupération du produit le plus commandé
+$query = "
+    SELECT 
+        a.name, 
+        SUM(o.quantity) AS total_quantity
+    FROM `order` o
+    JOIN article a ON o.article_id = a.id
+    WHERE a.author_id = ?
+    GROUP BY a.id
+    ORDER BY total_quantity DESC
+    LIMIT 1";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "i", $seller_id);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $most_ordered_article_name, $most_ordered_quantity);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
 
-        // Fermeture du statement
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "<h1>Erreur lors de la préparation de la requête.</h1>";
-    }
-} else {
-    echo "<h1>Veuillez fournir un ID d'acheteur valide.</h1>";
-}
-
-// Produit le plus commandé avec le nom de l'article
-$sql_most_ordered = "SELECT a.name AS article_name, o.article_id, SUM(o.quantity) AS total_quantity 
-                    FROM `order` o
-                    JOIN article a ON o.article_id = a.id 
-                    WHERE o.seller_id = ?
-                    GROUP BY o.article_id 
-                    ORDER BY total_quantity DESC 
-                    LIMIT 1;";
-$stmt = mysqli_prepare($conn, $sql_most_ordered);
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $buyer_id);
-    mysqli_stmt_execute($stmt);
-    $result_most_ordered = mysqli_stmt_get_result($stmt);
-
-    if ($result_most_ordered && mysqli_num_rows($result_most_ordered) > 0) {
-        $most_ordered = mysqli_fetch_assoc($result_most_ordered);
-        $most_ordered_article_name = $most_ordered['article_name'];
-        $most_ordered_quantity = $most_ordered['total_quantity'];
-    }
-
-    // Fermeture du statement
-    mysqli_stmt_close($stmt);
-} else {
-    echo "<h1>Erreur lors de la préparation de la requête.</h1>";
-}
-
-// Produit qui rapporte le plus d'argent avec le nom de l'article
-$sql_highest_revenue = "SELECT a.name AS article_name, o.article_id, SUM(o.total_price) AS total_revenue 
-                        FROM `order` o 
-                        JOIN article a ON o.article_id = a.id
-                        WHERE o.seller_id = ?
-                        GROUP BY o.article_id 
-                        ORDER BY total_revenue DESC 
-                        LIMIT 1";
-$stmt = mysqli_prepare($conn, $sql_highest_revenue);
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $buyer_id);
-    mysqli_stmt_execute($stmt);
-    $result_highest_revenue = mysqli_stmt_get_result($stmt);
-
-    if ($result_highest_revenue && mysqli_num_rows($result_highest_revenue) > 0) {
-        $highest_revenue = mysqli_fetch_assoc($result_highest_revenue);
-        $highest_revenue_article_name = $highest_revenue['article_name'];
-        $highest_revenue_total = $highest_revenue['total_revenue'];
-    }
-
-    // Fermeture du statement
-    mysqli_stmt_close($stmt);
-} else {
-    echo "<h1>Erreur lors de la préparation de la requête.</h1>";
-}
-
-$sql_total_revenue = 'SELECT SUM(total_price) AS total_revenue FROM `order` WHERE seller_id = ?';
-$stmt = mysqli_prepare($conn, $sql_total_revenue);
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "i", $buyer_id);
-    mysqli_stmt_execute($stmt);
-    $result_total_revenue = mysqli_stmt_get_result($stmt);
-
-    if ($result_total_revenue && mysqli_num_rows($result_total_revenue) > 0) {
-        $total_revenue_row = mysqli_fetch_assoc($result_total_revenue);
-        $total_revenue = $total_revenue_row['total_revenue'];
-    }
-
-    // Fermeture du statement
-    mysqli_stmt_close($stmt);
-} else {
-    echo "<h1>Erreur lors de la préparation de la requête.</h1>";
-}
+// Récupération du produit le plus rentable
+$query = "
+    SELECT 
+        a.name, 
+        SUM(o.total_price) AS total_revenue
+    FROM `order` o
+    JOIN article a ON o.article_id = a.id
+    WHERE a.author_id = ?
+    GROUP BY a.id
+    ORDER BY total_revenue DESC
+    LIMIT 1";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "i", $seller_id);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $highest_revenue_article_name, $highest_revenue_total);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Tableau de bord</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Tableau de bord</h1>
-    <?php if ($total_products_sold > 0): ?>
-        <p>Total des produits vendus : <?php echo $total_products_sold; ?></p>
-        <br>
-        <p>Produit le plus commandé : <?php echo $most_ordered_article_name; ?> avec <?php echo $most_ordered_quantity; ?> commandes</p>
-        <br>
-        <p>Produit qui rapporte le plus d'argent : <?php echo $highest_revenue_article_name; ?> avec un revenu total de <?php echo $highest_revenue_total; ?></p>
-        <br>
-        <p>Revenu total : <?php echo $total_revenue; ?></p>
-    <?php else: ?>
-        <p>Aucun produit vendu pour le moment.</p>
-    <?php endif; ?>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="../collection.php">Cave d'Exception</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="../collection.php">Collection</a></li>
+                    <?php if (isset($_SESSION['username'])): ?>
+                        <?php if ($_SESSION['role'] === 'seller'): ?>
+                            <li class="nav-item"><a class="nav-link active" href="dashboard.php">Dashboard</a></li>
+                        <?php endif; ?>
+                        
+                        <li class="nav-item"><a class="nav-link" href="../cart.php">Panier</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../account.php">Mon Profil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../logout.php">Déconnexion</a></li>
+                    <?php else: ?>
+                        <li class="nav-item"><a class="nav-link" href="../login.php">Connexion</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../register.php">Inscription</a></li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Contenu du tableau de bord -->
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Tableau de bord du vendeur</h1>
 
-    <a href="orders.php">gerer les commandes</a>
+        <?php if ($total_products_sold > 0): ?>
+            <div class="row">
+                <!-- Total des produits vendus -->
+                <div class="col-md-6">
+                    <div class="card border-dark mb-3">
+                        <div class="card-header bg-dark text-white">Produits vendus</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Total des produits vendus</h5>
+                            <p class="card-text"><?php echo $total_products_sold; ?></p>
+                        </div>
+                    </div>
+                </div>
 
-    <a href="article.php">gerer les articles</a>
+                <!-- Produit le plus commandé -->
+                <div class="col-md-6">
+                    <div class="card border-primary mb-3">
+                        <div class="card-header bg-primary text-white">Produit le plus commandé</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo $most_ordered_article_name; ?></h5>
+                            <p class="card-text"><?php echo $most_ordered_quantity; ?> commandes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <a href="../account.php">gerer le compte</a>
+            <div class="row">
+                <!-- Produit qui rapporte le plus -->
+                <div class="col-md-6">
+                    <div class="card border-success mb-3">
+                        <div class="card-header bg-success text-white">Produit le plus rentable</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo $highest_revenue_article_name; ?></h5>
+                            <p class="card-text">Revenu total : <?php echo number_format($highest_revenue_total, 2); ?> €</p>
+                        </div>
+                    </div>
+                </div>
 
-    
+                <!-- Revenu total -->
+                <div class="col-md-6">
+                    <div class="card border-warning mb-3">
+                        <div class="card-header bg-warning text-white">Revenu total</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Revenu total généré</h5>
+                            <p class="card-text"><?php echo number_format($total_revenue, 2); ?> €</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="alert alert-info text-center">
+                <p>Aucun produit vendu pour le moment.</p>
+            </div>
+        <?php endif; ?>
+
+        <!-- Liens de navigation -->
+        <div class="text-center mt-4">
+            <a href="orders.php" class="btn btn-primary me-2">Gérer les commandes</a>
+            <a href="article.php" class="btn btn-secondary me-2">Gérer les articles</a>
+            <a href="../account.php" class="btn btn-dark">Mon compte</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

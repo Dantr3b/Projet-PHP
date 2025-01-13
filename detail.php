@@ -2,7 +2,6 @@
 require_once("config.php"); // Connexion à la base de données
 session_start();
 
-
 // Vérification et récupération de l'ID de l'article
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -25,7 +24,7 @@ if ($user_id <= 0) {
 }
 
 // Récupération des détails de l'article
-$stmt = mysqli_prepare($conn, "SELECT name, description, price, category, vintage, region, image, stock FROM article WHERE id = ?");
+$stmt = mysqli_prepare($conn, "SELECT id, name, description, price, category, vintage, region, image, stock FROM article WHERE id = ?");
 mysqli_stmt_bind_param($stmt, "i", $id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
@@ -35,6 +34,21 @@ $article = mysqli_fetch_assoc($result);
 if (!$article) {
     echo "Article introuvable.";
     exit();
+}
+
+// Gestion de l'ajout au panier
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
+    $quantity = intval($_POST['quantity']);
+    if ($quantity > 0 && $quantity <= $article['stock']) {
+        if (isset($_SESSION['cart'][$id])) {
+            $_SESSION['cart'][$id] += $quantity; // Ajouter la quantité au panier existant
+        } else {
+            $_SESSION['cart'][$id] = $quantity; // Ajouter un nouvel article au panier
+        }
+        $success_message = "Article ajouté au panier avec succès.";
+    } else {
+        $error_message = "Quantité invalide ou non disponible.";
+    }
 }
 
 // Vérification si l'article est déjà dans les favoris
@@ -54,94 +68,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_favorites']) &
     }
     mysqli_stmt_close($insert_stmt);
 }
-
-
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($article['name']); ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h2><?php echo htmlspecialchars($article['name']); ?></h2>
+    <?php include("navbar.php"); ?>
 
-    <!-- Affichage de l'image -->
-    <img src="<?php echo htmlspecialchars(str_replace('../', '', $article['image'] ?? "")); ?>" 
-         alt="<?php echo htmlspecialchars($article['name']); ?>" 
-         width="400"><br><br>
+    <div class="container my-5">
+        <div class="row">
+            <!-- Colonne pour l'image -->
+            <div class="col-md-6">
+                <img src="<?php echo htmlspecialchars(str_replace('../', '', $article['image'] ?? "")); ?>" 
+                     alt="<?php echo htmlspecialchars($article['name']); ?>" 
+                     class="img-fluid rounded">
+            </div>
 
-    <!-- Détails de l'article -->
-    <p><strong>Prix :</strong> <?php echo number_format($article['price'], 2); ?> €</p>
-    <p><strong>Catégorie :</strong> <?php echo htmlspecialchars($article['category'] ?? ""); ?></p>
-    <p><strong>Année :</strong> <?php echo htmlspecialchars($article['vintage'] ?? ""); ?></p>
-    <p><strong>Région :</strong> <?php echo htmlspecialchars($article['region'] ?? ""); ?></p>
-    <p><strong>Stock disponible :</strong> <?php echo htmlspecialchars($article['stock']); ?></p>
-    <p><strong>Description :</strong></p>
-    <p><?php echo nl2br(htmlspecialchars($article['description'] ?? "")); ?></p>
+            <!-- Colonne pour les détails -->
+            <div class="col-md-6">
+                <h1><?php echo htmlspecialchars($article['name']); ?></h1>
+                <p><strong>Prix :</strong> <?php echo number_format($article['price'], 2); ?> €</p>
+                <p><strong>Catégorie :</strong> <?php echo htmlspecialchars($article['category'] ?? ""); ?></p>
+                <p><strong>Année :</strong> <?php echo htmlspecialchars($article['vintage'] ?? ""); ?></p>
+                <p><strong>Région :</strong> <?php echo htmlspecialchars($article['region'] ?? ""); ?></p>
+                <p><strong>Stock disponible :</strong> <?php echo htmlspecialchars($article['stock']); ?></p>
+                <p><strong>Description :</strong></p>
+                <p><?php echo nl2br(htmlspecialchars($article['description'] ?? "")); ?></p>
 
-    <!-- Bouton ajouter aux favoris -->
-    <form method="post" action="detail.php?id=<?php echo $id; ?>">
-        <?php if ($is_favorited): ?>
-            <p style="color: green;">Cet article est déjà dans vos favoris.</p>
-        <?php else: ?>
-            <button type="submit" name="add_to_favorites">Ajouter aux favoris</button>
-        <?php endif; ?>
-    </form>
+                <!-- Message de succès ou d'erreur -->
+                <?php if (!empty($success_message)): ?>
+                    <div class="alert alert-success"><?php echo $success_message; ?></div>
+                <?php elseif (!empty($error_message)): ?>
+                    <div class="alert alert-danger"><?php echo $error_message; ?></div>
+                <?php endif; ?>
 
-    <!-- Affichage du message -->
-    <?php if (!empty($message)): ?>
-        <p style="color: green;"><?php echo $message; ?></p>
-    <?php endif; ?>
+                <!-- Bouton ajouter aux favoris -->
+                <form method="post" class="mb-3">
+                    <?php if ($is_favorited): ?>
+                        <p class="text-success">Cet article est déjà dans vos favoris.</p>
+                    <?php else: ?>
+                        <button type="submit" name="add_to_favorites" class="btn btn-warning">Ajouter aux favoris</button>
+                    <?php endif; ?>
+                </form>
 
-    <form method="post" onsubmit="addToCart(event)">
-        <input type="hidden" name="id" value="<?php echo $id; ?>"> <!-- ID de l'article -->
-        <label for="quantity">Quantité :</label>
-        <input type="number" name="quantity" id="quantity" value="1" min="1" max="<?php echo $article['stock']; ?>"> <!-- Quantité -->
-        <button type="submit" name="add_to_cart">Ajouter au panier</button>
-    </form>
+                <!-- Formulaire pour ajouter au panier -->
+                <form method="post">
+                    <div class="input-group mb-3">
+                        <label for="quantity" class="form-label me-3">Quantité :</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" 
+                               value="1" min="1" max="<?php echo $article['stock']; ?>">
+                        <button type="submit" name="add_to_cart" class="btn btn-success">Ajouter au panier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-    <!-- Zone pour afficher le message -->
-    <p id="cart-message"></p>
+        <div class="text-center mt-5">
+            <a href="collection.php" class="btn btn-secondary">Retour à la collection</a>
+        </div>
+    </div>
 
-
-
-
-    <p><a href="collection.php">Retour à la collection</a></p>
-
-
-    <script>
-    // Fonction pour envoyer les données au serveur via AJAX
-    function addToCart(event) {
-        event.preventDefault(); // Empêche le rechargement de la page
-
-        const formData = new FormData(event.target); // Récupère les données du formulaire
-
-        // Envoi de la requête AJAX
-        fetch("carttools.php", {
-            method: "POST",
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Affiche un message de succès
-                document.getElementById("cart-message").innerHTML = "Article ajouté au panier avec succès.";
-                document.getElementById("cart-message").style.color = "green";
-            } else {
-                // Affiche un message d'erreur
-                document.getElementById("cart-message").innerHTML = data.message;
-                document.getElementById("cart-message").style.color = "red";
-            }
-        })
-        .catch(error => {
-            console.error("Erreur:", error);
-            document.getElementById("cart-message").innerHTML = "Une erreur est survenue.";
-            document.getElementById("cart-message").style.color = "red";
-        });
-    }
-</script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

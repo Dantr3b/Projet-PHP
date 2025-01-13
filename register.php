@@ -1,6 +1,6 @@
 <?php
 // Inclut les paramètres de connexion à la base de données
-require_once("config.php"); 
+require_once("config.php");
 
 $error = "";
 $success = "";
@@ -52,42 +52,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="fr">
 
-<link rel="stylesheet" href="style/css/register.css">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<?php include("navbar.php"); ?>
-
-
 <body>
-    <h2>Créer un compte</h2>
+    <?php include("navbar.php"); ?>
 
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
-    <?php elseif (!empty($success)): ?>
-        <p style="color: green;"><?php echo htmlspecialchars($success); ?></p>
-    <?php endif; ?>
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
+            <h2 class="text-center mb-4">Créer un compte</h2>
 
-    <form method="post" action="register.php">
-        <label for="username">Nom d'utilisateur :</label><br>
-        <input type="text" name="username" id="username" required><br><br>
+            <!-- Affichage des messages d'erreur ou de succès -->
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+            <?php elseif (!empty($success)): ?>
+                <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+            <?php endif; ?>
 
-        <label for="email">Adresse e-mail :</label><br>
-        <input type="email" name="email" id="email" required><br><br>
+            <form method="post" action="register.php">
+                <!-- Champ Nom d'utilisateur -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" name="username" id="username" class="form-control" placeholder="Votre nom d'utilisateur" required>
+                </div>
 
-        <label for="password">Mot de passe :</label><br>
-        <input type="password" name="password" id="password" required><br><br>
+                <!-- Champ Adresse e-mail -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Adresse e-mail</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Votre adresse e-mail" required>
+                </div>
 
-        <label for="confirm_password">Confirmer le mot de passe :</label><br>
-        <input type="password" name="confirm_password" id="confirm_password" required><br><br>
+                <!-- Champ Mot de passe -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Votre mot de passe" required>
+                </div>
 
-        <button type="submit">S'inscrire</button>
-        <br>
+                <!-- Champ Confirmer le mot de passe -->
+                <div class="mb-3">
+                    <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirmez votre mot de passe" required>
+                </div>
 
-        <p>Vous avez déjà un compte ? <a href="login.php">Connectez-vous</a></p>
-    </form>
+                <!-- Bouton S'inscrire -->
+                <button type="submit" class="btn btn-dark w-100">S'inscrire</button>
+            </form>
+
+            <p class="text-center mt-3">Vous avez déjà un compte ? <a href="login.php">Connectez-vous</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
