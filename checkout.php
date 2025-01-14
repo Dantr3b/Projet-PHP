@@ -72,9 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && empty($error)) {
             mysqli_stmt_close($stmt);
         }
 
-        // Vider le panier
-        $_SESSION['cart'] = [];
-
         // Rediriger vers une page de confirmation
         header("Location: confirmation.php");
         exit();
