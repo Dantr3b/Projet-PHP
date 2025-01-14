@@ -47,7 +47,6 @@ $query_top_sellers = "
     LIMIT 3";
 $result_top_sellers = mysqli_query($conn, $query_top_sellers);
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -56,54 +55,75 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
     <title>Accueil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #f8f9fa;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #ddd;
-        }
-        header img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-        header div {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .search-bar {
-            margin: 20px auto;
-            text-align: center;
-        }
-        .carousel, .top-sellers {
-            margin: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-        }
-        .carousel img, .top-sellers img {
-            max-width: 100px;
-            border-radius: 10px;
-        }
-        .carousel {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            flex-direction: column;
-        }
         .carousel-item {
-            flex: 0 0 150px; /* Largeur minimale de 150px */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-card {
+        text-align: center;
+        margin: 0 10px;
+        width: 200px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card img {
+        margin-top: 20px;
+        max-height: 150px;
+        object-fit: contain;
+        margin-bottom: 30px;
+        border-radius: 10px;
+        background-color: white;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-10px); /* Déplace légèrement la carte vers le haut */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Accentue l'ombre */
+    }
+    .product-card:hover img {
+        transform: scale(1.1); /* Agrandit légèrement l'image */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Ajoute une ombre à l'image */
+    }
+        .banner {
+            background-image: url('uploads/Capture\ d’écran\ 2025-01-14\ à\ 12.31.19.png');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+        }
+        .banner h1 {
+            color: transparent;
+            font-size: 36px;
+        }
+        .card-review {
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            border-radius: 10px;
+        }
+
+        .top-sellers img {
+            height: 100px;
+            width: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .top-seller-card {
             text-align: center;
-            margin: 0 10px; /* Espacement entre les éléments */
-            display: block;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        .top-seller-card img{
+            height: 50px;
+            width: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -111,45 +131,191 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
     <!-- Navbar -->
     <?php include("navbar.php"); ?>
 
+    <div class="container-fluid p-0">
+        <div class="banner d-flex align-items-center justify-content-center">
+            <h1>Bienvenue sur Notre Plateforme</h1>
+        </div>
+    </div>
+
+
     <!-- Barre de recherche -->
-    <div class="search-bar">
-        <form method="get" action="search.php">
-            <input type="text" name="query" placeholder="Rechercher un produit ou un vendeur" style="width: 300px; padding: 10px;">
-            <button type="submit" style="padding: 10px;">Rechercher</button>
+    <div class="container search-bar mt-4">
+        <form method="get" action="search.php" class="input-group">
+            <input type="text" name="query" class="form-control" placeholder="Rechercher un produit ou un vendeur">
+            <button type="submit" class="btn btn-dark">Rechercher</button>
         </form>
     </div>
 
-    <!-- Carrousel des produits les plus vendus -->
-    <div class="carousel">
-        <h2>Produits les plus vendus</h2>
-        <div class="carousel-items">
+    <!-- Produits les plus vendus -->
+    <div class="container top-section">
+        <h2 class="text-center my-4">Produits les plus vendus</h2>
         <?php if (mysqli_num_rows($result_top_products) > 0): ?>
-                <?php while ($product = mysqli_fetch_assoc($result_top_products)): ?>
-                    <div class="carousel-item">
-                        <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
-                        <p><?php echo htmlspecialchars($product['name']); ?></p>
-                        <p>Vendus : <?php echo htmlspecialchars($product['total_sold']); ?></p>
-                    </div>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <p>Aucun produit vendu.</p>
-            <?php endif; ?>
+            <?php 
+            $products = mysqli_fetch_all($result_top_products, MYSQLI_ASSOC);
+            $product_count = count($products);
+            ?>
 
-        </div>
+            <?php if ($product_count > 3): ?>
+                <!-- Carrousel si plus de 3 produits -->
+                <div id="topProductsCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <?php 
+                        $product_chunks = array_chunk($products, 3); // Diviser les produits en groupes de 3
+                        foreach ($product_chunks as $index => $chunk): 
+                        ?>
+                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                                <div class="d-flex justify-content-center">
+                                    <?php foreach ($chunk as $product): ?>
+                                        <div class="product-card">
+                                            <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" 
+                                                 alt="<?php echo htmlspecialchars($product['name']); ?>">
+                                            <h6><?php echo htmlspecialchars($product['name']); ?></h6>
+                                            <p>Vendus : <?php echo htmlspecialchars($product['total_sold']); ?></p>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <!-- Contrôles du carrousel -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#topProductsCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Précédent</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#topProductsCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Suivant</span>
+                    </button>
+                </div>
+            <?php else: ?>
+                <!-- Affichage normal si 3 produits ou moins -->
+                <div class="d-flex justify-content-center">
+                    <?php foreach ($products as $product): ?>
+                        <div class="product-card">
+                            <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" 
+                                 alt="<?php echo htmlspecialchars($product['name']); ?>">
+                            <h6><?php echo htmlspecialchars($product['name']); ?></h6>
+                            <p>Vendus : <?php echo htmlspecialchars($product['total_sold']); ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        <?php else: ?>
+            <p class="text-center">Aucun produit vendu pour le moment.</p>
+        <?php endif; ?>
     </div>
 
     <!-- Top vendeurs -->
-    <div class="top-sellers">
-        <h2>Top Vendeurs</h2>
-        <div>
-            <?php while ($seller = mysqli_fetch_assoc($result_top_sellers)): ?>
-                <div>
-                    <img src="uploads/<?php echo htmlspecialchars(!empty($user['photo']) ? $user['photo'] : 'defaultpp.png'); ?>" alt="Photo de <?php echo htmlspecialchars($seller['username']); ?>">
-                    <p><?php echo htmlspecialchars($seller['username']); ?></p>
-                    <p>Total des ventes : <?php echo number_format($seller['total_sales'], 2); ?> €</p>
-                </div>
-            <?php endwhile; ?>
+    <div class="container top-section">
+        <h2 class="text-center my-4">Top Vendeurs</h2>
+        <div class="row">
+            <?php if (mysqli_num_rows($result_top_sellers) > 0): ?>
+                <?php while ($seller = mysqli_fetch_assoc($result_top_sellers)): ?>
+                    <div class="col-md-4">
+                        <div class="top-seller-card">
+                            <img src="uploads/<?php echo htmlspecialchars(!empty($seller['photo']) ? $seller['photo'] : 'defaultpp.png'); ?>" 
+                                 alt="Photo de <?php echo htmlspecialchars($seller['username']); ?>">
+                            <h5><?php echo htmlspecialchars($seller['username']); ?></h5>
+                            <p>Total des ventes : <?php echo number_format($seller['total_sales'], 2); ?> €</p>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p class="text-center">Aucun vendeur pour le moment.</p>
+            <?php endif; ?>
         </div>
     </div>
+      <!-- Témoignages -->
+      <div class="container my-5">
+        <h2 class="text-center">Ce que disent nos clients</h2>
+        <br>
+        <div class="row">
+            <?php
+            $query_reviews = "
+                SELECT r.comment, r.rating, u.username 
+                FROM review r 
+                JOIN user u ON r.user_id = u.id 
+                ORDER BY RAND() 
+                LIMIT 3";
+            $result_reviews = mysqli_query($conn, $query_reviews);
+
+            if (mysqli_num_rows($result_reviews) > 0):
+                while ($review = mysqli_fetch_assoc($result_reviews)):
+            ?>
+                <div class="col-md-4">
+                    <div class="card-review">
+                        <h5><?php echo htmlspecialchars($review['username']); ?></h5>
+                        <p>"<?php echo htmlspecialchars($review['comment']); ?>"</p>
+                        <p class="text-warning">Note : <?php echo $review['rating']; ?>/5</p>
+                    </div>
+                </div>
+            <?php 
+                endwhile;
+            else:
+            ?>
+                <p class="text-center">Aucun témoignage pour le moment.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+<br><br>
+    <!-- Call-to-Action -->
+    <div class="container my-5 text-center">
+        <h2>Rejoignez notre communauté</h2>
+        <p>Découvrez les meilleurs produits ou devenez un vendeur sur notre plateforme.</p>
+        <a href="register.php" class="btn btn-success me-2">S'inscrire</a>
+        <a href="collection.php" class="btn btn-primary">Voir le Catalogue</a>
+    </div>
+                <br><br><br>
+    <!-- Statistiques -->
+    <div class="container my-5">
+        <h2 class="text-center">Nos Statistiques</h2>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h3 class="text-success">
+                    <?php
+                    $query_total_products = "SELECT COUNT(*) AS total_products FROM article";
+                    $result_total_products = mysqli_query($conn, $query_total_products);
+                    $total_products = mysqli_fetch_assoc($result_total_products)['total_products'];
+                    echo $total_products;
+                    ?>
+                </h3>
+                <p>Produits disponibles</p>
+            </div>
+            <div class="col-md-4">
+                <h3 class="text-primary">
+                    <?php
+                    $query_total_users = "SELECT COUNT(*) AS total_users FROM user";
+                    $result_total_users = mysqli_query($conn, $query_total_users);
+                    $total_users = mysqli_fetch_assoc($result_total_users)['total_users'];
+                    echo $total_users;
+                    ?>
+                </h3>
+                <p>Utilisateurs inscrits</p>
+            </div>
+            <div class="col-md-4">
+                <h3 class="text-warning">
+                    <?php
+                    $query_total_sales = "SELECT SUM(total_price) AS total_sales FROM `order`";
+                    $result_total_sales = mysqli_query($conn, $query_total_sales);
+                    $total_sales = mysqli_fetch_assoc($result_total_sales)['total_sales'];
+                    echo number_format($total_sales, 2) . ' €';
+                    ?>
+                </h3>
+                <p>Ventes réalisées</p>
+            </div>
+        </div>
+    </div>
+                <br>
+                <br>
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p>&copy; 2025 Votre Site. Tous droits réservés.</p>
+        <a href="contact.php" class="text-white">Contact</a> | 
+        <a href="terms.php" class="text-white">Conditions d'utilisation</a> | 
+        <a href="privacy.php" class="text-white">Politique de confidentialité</a>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
