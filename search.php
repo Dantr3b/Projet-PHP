@@ -222,7 +222,7 @@ if (!empty($query) || $seller_category) {
                         <div>
                             <p><strong><?php echo htmlspecialchars($seller['username']); ?></strong></p>
                             <p>Total des commandes : <?php echo htmlspecialchars($seller['total_orders']); ?></p>
-                            <a href="vendor.php?id=<?php echo $seller['id']; ?>">Voir le profil</a>
+                            <a href="account.php?id=<?php echo $seller['id']; ?>">Voir le profil</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
