@@ -3,6 +3,17 @@
 Bienvenue dans **Cave d'Exception**, un site e-commerce de vente de bouteilles d'alcool haut de gamme : vins, champagnes, et spiritueux. Ce projet est développé en **PHP natif** et permet une gestion complète des utilisateurs, des vendeurs, et des administrateurs.
 
 ---
+## **Chose a faire**
+- facture (en cours par killian)
+- email/username unique (en cours pas gabin)
+- solde
+- page compte avec tout les articles vendu et solde
+- Un utilisateur non connecté peut accéder aux pages et autres pages doivent le rediriger vers la page connexion. (en cours par gabin)
+- favoris
+- note et comentaire (en cours par gabin)
+- système mail
+
+---
 
 ## **Sommaire**
 1. [Description du projet](#description-du-projet)
@@ -70,8 +81,8 @@ if ($db->connect_error) {
 | `/login`                     | Page de connexion                         | ✅ Terminé   |
 | `/catalogue`                 | Liste des articles avec filtres           | 🎨 Ajouter du style    |
 | `/detail?id=ID`              | Page détaillée d'un produit               | 🎨 Ajouter du style     |
-| `/cart`                      | Affichage et gestion du panier            | 🚧 en cours    |
-| `/cart/validate`             | Validation des informations de commande   | 🚧 en cours    |
+| `/cart`                      | Affichage et gestion du panier            | 🚧 Ajouter du style    |
+| `/cart/validate`             | Validation des informations de commande   | 🚧 Ajouter du style   |
 | `/favorites`                 | Liste des articles favoris                | 🎨 Ajouter du style    |
 | `/account`                   | Gestion du compte utilisateur             | ✅ Terminé    |
 | `sellers/article`            | Liste des articles proposer par le vendeur| 🎨 Ajouter du style    |
@@ -82,7 +93,7 @@ if ($db->connect_error) {
 | `/admin/dashboard`           | Tableau de bord administrateur            | 🚧 À faire    |
 | `/admin/users`               | Gestion des utilisateurs                  | 🎨 Ajouter du style    |
 | `/admin/articles`            | Gestion des articles                      | 🚧 Ajouter du style    |
-| `/search`                    | Recherche avancée multi-critères          | 🚧 À faire    |
+| `/search`                    | Recherche avancée multi-critères          | 🚧 Ajouter du style   |
 | `/giftboxes`                 | Page des coffrets cadeaux                 | 🚧 À faire    |
 | `/contact`                   | Formulaire de contact                     | 🚧 À faire    |
 | `/404`                       | Page d'erreur 404                         | 🚧 À faire    |
