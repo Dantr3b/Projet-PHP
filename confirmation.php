@@ -45,6 +45,12 @@ $message = "Votre commande a été validée avec succès !";
             </div>
         </div>
 
+        
+        <div class="text-center my-5">
+            <a href="generate_invoice.php" class="btn btn-primary">Télécharger la facture</a>
+        </div>
+
+
         <div class="text-center mt-4">
             <a href="collection.php" class="btn btn-primary">Retourner au catalogue</a>
             <a href="account.php" class="btn btn-dark">Consulter mon compte</a>

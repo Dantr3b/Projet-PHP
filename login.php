@@ -22,9 +22,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Vérification du mot de passe avec password_verify
             if (password_verify($password, $row['password'])) {
                 // Connexion réussie : initialiser la session
+                $stmt = mysqli_prepare($conn, "SELECT id, role FROM user WHERE username = ?");
+                mysqli_stmt_bind_param($stmt, "s", $username);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $row = mysqli_fetch_assoc($result);
+                $_SESSION['id'] = $row['id'];
+                $_SESSION['role'] = $row['role'];
                 $_SESSION['username'] = $username;
                 $_SESSION['cart'] = [];
-                header("Location: account.php"); // Rediriger vers la page protégée
+                header("Location: index.php"); // Rediriger vers la page protégée
                 exit();
             } else {
                 $error = "Identifiant ou mot de passe incorrect.";

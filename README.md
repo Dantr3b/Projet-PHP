@@ -4,12 +4,9 @@ Bienvenue dans **Cave d'Exception**, un site e-commerce de vente de bouteilles d
 
 ---
 ## **Chose a faire**
-- facture (en cours par killian)
 - solde
 - page compte avec tout les articles vendu et solde
 - favoris
-- note et comentaire (en cours par gabin)
-- système mail
 
 ---
 
