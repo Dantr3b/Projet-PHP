@@ -4,15 +4,16 @@ Bienvenue dans **Cave d'Exception**, un site e-commerce de vente de bouteilles d
 
 ---
 ## **Chose a faire**
-email/username unique
-solde
-page compte avec tout les articles vendu et solde
-Un utilisateur non connecté peut accéder aux pages et
-autres pages doivent le rediriger vers la page connexion.
-favoris
-note et comentaire
-système mail
-ameilorer le readme
+- facture
+- email/username unique
+- solde
+- page compte avec tout les articles vendu et solde
+- Un utilisateur non connecté peut accéder aux pages et
+- autres pages doivent le rediriger vers la page connexion.
+- favoris
+- note et comentaire
+- système mail
+- ameilorer le readme
 
 ---
 
