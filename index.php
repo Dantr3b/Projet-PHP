@@ -2,21 +2,29 @@
 require_once("config.php");
 session_start();
 
-// Vérification si l'utilisateur est connecté
-if (!isset($_SESSION['id'])) {
-    header("Location: login.php");
-    exit();
-}
 
+if (isset($_SESSION['id'])) {
+    // Récupération des informations de l'utilisateur
+    $user_id = $_SESSION['id'];
+    $query_user = "SELECT username, photo, balance FROM user WHERE id = ?";
+    $stmt_user = mysqli_prepare($conn, $query_user);
+    mysqli_stmt_bind_param($stmt_user, "i", $user_id);
+    mysqli_stmt_execute($stmt_user);
+    $result_user = mysqli_stmt_get_result($stmt_user);
+    $user = mysqli_fetch_assoc($result_user);
+    mysqli_stmt_close($stmt_user);
+}
 // Récupération des informations de l'utilisateur
-$user_id = $_SESSION['id'];
-$query_user = "SELECT username, photo, balance FROM user WHERE id = ?";
-$stmt_user = mysqli_prepare($conn, $query_user);
-mysqli_stmt_bind_param($stmt_user, "i", $user_id);
-mysqli_stmt_execute($stmt_user);
-$result_user = mysqli_stmt_get_result($stmt_user);
-$user = mysqli_fetch_assoc($result_user);
-mysqli_stmt_close($stmt_user);
+if (isset($_SESSION['id'])) {
+    $user_id = $_SESSION['id'];
+    $query_user = "SELECT username, photo, balance FROM user WHERE id = ?";
+    $stmt_user = mysqli_prepare($conn, $query_user);
+    mysqli_stmt_bind_param($stmt_user, "i", $user_id);
+    mysqli_stmt_execute($stmt_user);
+    $result_user = mysqli_stmt_get_result($stmt_user);
+    $user = mysqli_fetch_assoc($result_user);
+    mysqli_stmt_close($stmt_user);
+}
 
 // Récupération des produits les plus vendus
 $query_top_products = "
@@ -30,9 +38,10 @@ $result_top_products = mysqli_query($conn, $query_top_products);
 
 // Récupération des trois meilleurs vendeurs
 $query_top_sellers = "
-    SELECT u.id, u.username, u.photo, SUM(o.total_price) AS total_sales
+    SELECT u.id, u.username, u.photo, u.role, SUM(o.total_price) AS total_sales
     FROM user u
     JOIN `order` o ON u.id = o.seller_id
+    WHERE u.role = 'seller'
     GROUP BY u.id
     ORDER BY total_sales DESC
     LIMIT 3";
@@ -45,6 +54,7 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -87,27 +97,19 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
             display: flex;
             overflow-x: auto;
             gap: 10px;
+            flex-direction: column;
         }
         .carousel-item {
-            flex: 0 0 auto;
+            flex: 0 0 150px; /* Largeur minimale de 150px */
             text-align: center;
+            margin: 0 10px; /* Espacement entre les éléments */
+            display: block;
         }
     </style>
 </head>
 <body>
-    <!-- En-tête -->
-    <header>
-        <div>
-            <img src="uploads/<?php echo htmlspecialchars(!empty($user['photo']) ? $user['photo'] : 'defaultpp.png'); ?>" 
-            alt="Photo de profil">
-            <span>Bonjour, <?php echo htmlspecialchars($user['username']); ?></span>
-        </div>
-        <div>
-            <a href="favorites.php">Favoris</a>
-            <a href="cart.php">Panier</a>
-            <span>Solde : <?php echo number_format($user['balance'], 2); ?> €</span>
-        </div>
-    </header>
+    <!-- Navbar -->
+    <?php include("navbar.php"); ?>
 
     <!-- Barre de recherche -->
     <div class="search-bar">
@@ -121,13 +123,18 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
     <div class="carousel">
         <h2>Produits les plus vendus</h2>
         <div class="carousel-items">
-            <?php while ($product = mysqli_fetch_assoc($result_top_products)): ?>
-                <div class="carousel-item">
-                    <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
-                    <p><?php echo htmlspecialchars($product['name']); ?></p>
-                    <p>Vendus : <?php echo htmlspecialchars($product['total_sold']); ?></p>
-                </div>
-            <?php endwhile; ?>
+        <?php if (mysqli_num_rows($result_top_products) > 0): ?>
+                <?php while ($product = mysqli_fetch_assoc($result_top_products)): ?>
+                    <div class="carousel-item">
+                        <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
+                        <p><?php echo htmlspecialchars($product['name']); ?></p>
+                        <p>Vendus : <?php echo htmlspecialchars($product['total_sold']); ?></p>
+                    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p>Aucun produit vendu.</p>
+            <?php endif; ?>
+
         </div>
     </div>
 

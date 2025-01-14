@@ -18,10 +18,6 @@ if ($id <= 0) {
 // Récupération de l'utilisateur connecté
 $user_id = $_SESSION['id'] ?? 0;
 
-if ($user_id <= 0) {
-    echo "Vous devez être connecté pour voir cet article.";
-    exit();
-}
 
 // Récupération des détails de l'article
 $stmt = mysqli_prepare($conn, "SELECT id, name, description, price, category, vintage, region, image, stock FROM article WHERE id = ?");
@@ -37,36 +33,40 @@ if (!$article) {
 }
 
 // Gestion de l'ajout au panier
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
-    $quantity = intval($_POST['quantity']);
-    if ($quantity > 0 && $quantity <= $article['stock']) {
-        if (isset($_SESSION['cart'][$id])) {
-            $_SESSION['cart'][$id] += $quantity; // Ajouter la quantité au panier existant
+if ($user_id != 0) {
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
+        $quantity = intval($_POST['quantity']);
+        if ($quantity > 0 && $quantity <= $article['stock']) {
+            if (isset($_SESSION['cart'][$id])) {
+                $_SESSION['cart'][$id] += $quantity; // Ajouter la quantité au panier existant
+            } else {
+                $_SESSION['cart'][$id] = $quantity; // Ajouter un nouvel article au panier
+            }
+            $success_message = "Article ajouté au panier avec succès.";
         } else {
-            $_SESSION['cart'][$id] = $quantity; // Ajouter un nouvel article au panier
+            $error_message = "Quantité invalide ou non disponible.";
         }
-        $success_message = "Article ajouté au panier avec succès.";
-    } else {
-        $error_message = "Quantité invalide ou non disponible.";
     }
-}
 
-// Vérification si l'article est déjà dans les favoris
-$fav_stmt = mysqli_prepare($conn, "SELECT id FROM favorites WHERE user_id = ? AND article_id = ?");
-mysqli_stmt_bind_param($fav_stmt, "ii", $user_id, $id);
-mysqli_stmt_execute($fav_stmt);
-$fav_result = mysqli_stmt_get_result($fav_stmt);
-$is_favorited = mysqli_fetch_assoc($fav_result) ? true : false;
-mysqli_stmt_close($fav_stmt);
+    // Vérification si l'article est déjà dans les favoris
+    $fav_stmt = mysqli_prepare($conn, "SELECT id FROM favorites WHERE user_id = ? AND article_id = ?");
+    mysqli_stmt_bind_param($fav_stmt, "ii", $user_id, $id);
+    mysqli_stmt_execute($fav_stmt);
+    $fav_result = mysqli_stmt_get_result($fav_stmt);
+    $is_favorited = mysqli_fetch_assoc($fav_result) ? true : false;
+    mysqli_stmt_close($fav_stmt);
 
-// Gestion de l'ajout aux favoris
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_favorites']) && !$is_favorited) {
-    $insert_stmt = mysqli_prepare($conn, "INSERT INTO favorites (user_id, article_id) VALUES (?, ?)");
-    mysqli_stmt_bind_param($insert_stmt, "ii", $user_id, $id);
-    if (mysqli_stmt_execute($insert_stmt)) {
-        $is_favorited = true; // Mettre à jour l'état
+    // Gestion de l'ajout aux favoris
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_favorites']) && !$is_favorited) {
+        $insert_stmt = mysqli_prepare($conn, "INSERT INTO favorites (user_id, article_id) VALUES (?, ?)");
+        mysqli_stmt_bind_param($insert_stmt, "ii", $user_id, $id);
+        if (mysqli_stmt_execute($insert_stmt)) {
+            $is_favorited = true; // Mettre à jour l'état
+        }
+        mysqli_stmt_close($insert_stmt);
     }
-    mysqli_stmt_close($insert_stmt);
+   
 }
 ?>
 
@@ -109,23 +109,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_favorites']) &
                 <?php endif; ?>
 
                 <!-- Bouton ajouter aux favoris -->
-                <form method="post" class="mb-3">
-                    <?php if ($is_favorited): ?>
-                        <p class="text-success">Cet article est déjà dans vos favoris.</p>
-                    <?php else: ?>
-                        <button type="submit" name="add_to_favorites" class="btn btn-warning">Ajouter aux favoris</button>
-                    <?php endif; ?>
-                </form>
+                <?php if ($user_id == 0): ?>
+                    <p class="text-muted">Connectez-vous pour ajouter cet article à vos favoris.</p>
+                <?php else: ?>
+                    <form method="post" class="mb-3">
+                        <?php if ($is_favorited): ?>
+                            <p class="text-success">Cet article est déjà dans vos favoris.</p>
+                        <?php else: ?>
+                            <button type="submit" name="add_to_favorites" class="btn btn-warning">Ajouter aux favoris</button>
+                        <?php endif; ?>
+                    </form>
+                <?php endif; ?>
 
                 <!-- Formulaire pour ajouter au panier -->
-                <form method="post">
-                    <div class="input-group mb-3">
-                        <label for="quantity" class="form-label me-3">Quantité :</label>
-                        <input type="number" name="quantity" id="quantity" class="form-control" 
-                               value="1" min="1" max="<?php echo $article['stock']; ?>">
-                        <button type="submit" name="add_to_cart" class="btn btn-success">Ajouter au panier</button>
-                    </div>
-                </form>
+                <?php if ($user_id == 0): ?>
+                    <p class="text-muted">Connectez-vous pour ajouter cet article à votre panier.</p>
+                <?php else: ?>
+                    <form method="post">
+                        <div class="input-group mb-3">
+                            <label for="quantity" class="form-label me-3">Quantité :</label>
+                            <input type="number" name="quantity" id="quantity" class="form-control" 
+                                value="1" min="1" max="<?php echo $article['stock']; ?>">
+                            <button type="submit" name="add_to_cart" class="btn btn-success">Ajouter au panier</button>
+                        </div>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
 

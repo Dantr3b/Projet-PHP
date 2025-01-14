@@ -4,7 +4,7 @@
 }
 </style>
     <div class="container">
-        <a class="navbar-brand" href="/Projet-PHP/collection.php">Cave d'Exception</a>
+        <a class="navbar-brand" href="/Projet-PHP/index.php">Cave d'Exception</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         
