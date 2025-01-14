@@ -197,7 +197,6 @@ if ($_SESSION['id'] === $id_page) {
 </head>
 
 <body>
-    
     <?php include("navbar.php"); ?>
     <div class="container my-5">
     <?php if ($_SESSION['id'] == $id_page): ?>
