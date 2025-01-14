@@ -7,6 +7,7 @@ Bienvenue dans **Cave d'Exception**, un site e-commerce de vente de bouteilles d
 - solde
 - page compte avec tout les articles vendu et solde
 - favoris
+- liste des comande et avis 
 
 ---
 
