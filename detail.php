@@ -132,14 +132,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review']) && $
                 <?php endif; ?>
 
                 <!-- Formulaire pour ajouter au panier -->
-                <form method="post">
-                    <div class="input-group mb-3">
-                        <label for="quantity" class="form-label me-3">Quantité :</label>
-                        <input type="number" name="quantity" id="quantity" class="form-control" 
-                               value="1" min="1" max="<?php echo $article['stock']; ?>">
-                        <button type="submit" name="add_to_cart" class="btn btn-success">Ajouter au panier</button>
-                    </div>
-                </form>
+                <?php if ($user_id == 0): ?>
+                    <p class="text-muted">Connectez-vous pour ajouter cet article à votre panier.</p>
+                <?php else: ?>
+                    <form method="post">
+                        <div class="input-group mb-3">
+                            <label for="quantity" class="form-label me-3">Quantité :</label>
+                            <input type="number" name="quantity" id="quantity" class="form-control" 
+                                value="1" min="1" max="<?php echo $article['stock']; ?>">
+                            <button type="submit" name="add_to_cart" class="btn btn-success">Ajouter au panier</button>
+                        </div>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
 
