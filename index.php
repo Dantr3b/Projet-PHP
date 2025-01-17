@@ -86,6 +86,7 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Ajoute une ombre à l'image */
     }
         .banner {
+            margin-top: -15px;
             background-image: url('uploads/Capture\ d’écran\ 2025-01-14\ à\ 12.31.19.png');
             background-size: cover;
             background-position: center;
@@ -136,7 +137,7 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
             <h1>Bienvenue sur Notre Plateforme</h1>
         </div>
     </div>
-
+    <br>
 
     <!-- Barre de recherche -->
     <div class="container search-bar mt-4">
@@ -145,123 +146,125 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
             <button type="submit" class="btn btn-dark">Rechercher</button>
         </form>
     </div>
-
+        <br>
     <!-- Produits les plus vendus -->
-    <div class="container top-section">
-        <h2 class="text-center my-4">Produits les plus vendus</h2>
-        <?php if (mysqli_num_rows($result_top_products) > 0): ?>
-            <?php 
-            $products = mysqli_fetch_all($result_top_products, MYSQLI_ASSOC);
-            $product_count = count($products);
-            ?>
+<div class="container top-section">
+    <h2 class="text-center my-4">Produits les plus vendus</h2>
+    <?php if (mysqli_num_rows($result_top_products) > 0): ?>
+        <?php 
+        $products = mysqli_fetch_all($result_top_products, MYSQLI_ASSOC);
+        $product_count = count($products);
+        ?>
 
-            <?php if ($product_count > 3): ?>
-                <!-- Carrousel si plus de 3 produits -->
-                <div id="topProductsCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <?php 
-                        $product_chunks = array_chunk($products, 3); // Diviser les produits en groupes de 3
-                        foreach ($product_chunks as $index => $chunk): 
-                        ?>
-                            <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                                <div class="d-flex justify-content-center">
-                                    <?php foreach ($chunk as $product): ?>
+        <?php if ($product_count > 3): ?>
+            <!-- Carrousel si plus de 3 produits -->
+            <div id="topProductsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <?php 
+                    $product_chunks = array_chunk($products, 3); // Diviser les produits en groupes de 3
+                    foreach ($product_chunks as $index => $chunk): 
+                    ?>
+                        <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                            <div class="d-flex justify-content-center">
+                                <?php foreach ($chunk as $product): ?>
+                                    <a href="detail.php?id=<?php echo $product['id']; ?>" class="text-decoration-none text-dark">
                                         <div class="product-card">
                                             <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" 
                                                  alt="<?php echo htmlspecialchars($product['name']); ?>">
                                             <h6><?php echo htmlspecialchars($product['name']); ?></h6>
                                             <p>Vendus : <?php echo htmlspecialchars($product['total_sold']); ?></p>
                                         </div>
-                                    <?php endforeach; ?>
-                                </div>
+                                    </a>
+                                <?php endforeach; ?>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <!-- Contrôles du carrousel -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#topProductsCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Précédent</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#topProductsCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Suivant</span>
-                    </button>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php else: ?>
-                <!-- Affichage normal si 3 produits ou moins -->
-                <div class="d-flex justify-content-center">
-                    <?php foreach ($products as $product): ?>
+
+                <!-- Contrôles du carrousel -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#topProductsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#topProductsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            </div>
+        <?php else: ?>
+            <!-- Affichage normal si 3 produits ou moins -->
+            <div class="d-flex justify-content-center">
+                <?php foreach ($products as $product): ?>
+                    <a href="detail.php?id=<?php echo $product['id']; ?>" class="text-decoration-none text-dark">
                         <div class="product-card">
                             <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" 
                                  alt="<?php echo htmlspecialchars($product['name']); ?>">
                             <h6><?php echo htmlspecialchars($product['name']); ?></h6>
                             <p>Vendus : <?php echo htmlspecialchars($product['total_sold']); ?></p>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        <?php else: ?>
-            <p class="text-center">Aucun produit vendu pour le moment.</p>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
-    </div>
+    <?php else: ?>
+        <p class="text-center">Aucun produit vendu pour le moment.</p>
+    <?php endif; ?>
+</div>
+
 
     <!-- Top vendeurs -->
-    <div class="container top-section">
-        <h2 class="text-center my-4">Top Vendeurs</h2>
-        <div class="row">
-            <?php if (mysqli_num_rows($result_top_sellers) > 0): ?>
-                <?php while ($seller = mysqli_fetch_assoc($result_top_sellers)): ?>
-                    <div class="col-md-4">
-                        <div class="top-seller-card">
-                            <img src="uploads/<?php echo htmlspecialchars(!empty($seller['photo']) ? $seller['photo'] : 'defaultpp.png'); ?>" 
-                                 alt="Photo de <?php echo htmlspecialchars($seller['username']); ?>">
-                            <h5><?php echo htmlspecialchars($seller['username']); ?></h5>
-                            <p>Total des ventes : <?php echo number_format($seller['total_sales'], 2); ?> €</p>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <p class="text-center">Aucun vendeur pour le moment.</p>
-            <?php endif; ?>
-        </div>
-    </div>
-      <!-- Témoignages -->
-      <div class="container my-5">
-        <h2 class="text-center">Ce que disent nos clients</h2>
-        <br>
-        <div class="row">
-            <?php
-            $query_reviews = "
-                SELECT r.comment, r.rating, u.username 
-                FROM review r 
-                JOIN user u ON r.user_id = u.id 
-                ORDER BY RAND() 
-                LIMIT 3";
-            $result_reviews = mysqli_query($conn, $query_reviews);
-
-            if (mysqli_num_rows($result_reviews) > 0):
-                while ($review = mysqli_fetch_assoc($result_reviews)):
-            ?>
-                <div class="col-md-4">
-                    <div class="card-review">
-                        <h5><?php echo htmlspecialchars($review['username']); ?></h5>
-                        <p>"<?php echo htmlspecialchars($review['comment']); ?>"</p>
-                        <p class="text-warning">Note : <?php echo $review['rating']; ?>/5</p>
-                    </div>
+<div class="container top-section text-center">
+    <h2 class="text-center my-4">Top Vendeurs</h2>
+    <div class="d-flex justify-content-center flex-wrap">
+        <?php if (mysqli_num_rows($result_top_sellers) > 0): ?>
+            <?php while ($seller = mysqli_fetch_assoc($result_top_sellers)): ?>
+                <div class="top-seller-card m-3">
+                    <img src="uploads/<?php echo htmlspecialchars(!empty($seller['photo']) ? $seller['photo'] : 'defaultpp.png'); ?>" 
+                         alt="Photo de <?php echo htmlspecialchars($seller['username']); ?>">
+                    <h5><?php echo htmlspecialchars($seller['username']); ?></h5>
+                    <p>Total des ventes : <?php echo number_format($seller['total_sales'], 2); ?> €</p>
                 </div>
-            <?php 
-                endwhile;
-            else:
-            ?>
-                <p class="text-center">Aucun témoignage pour le moment.</p>
-            <?php endif; ?>
-        </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p class="text-center">Aucun vendeur pour le moment.</p>
+        <?php endif; ?>
     </div>
-<br><br>
+</div>
+
+<!-- Témoignages -->
+<div class="container my-5 text-center">
+    <h2 class="text-center">Ce que disent nos clients</h2>
+    <br>
+    <div class="d-flex justify-content-center flex-wrap">
+        <?php
+        $query_reviews = "
+            SELECT r.comment, r.rating, u.username 
+            FROM review r 
+            JOIN user u ON r.user_id = u.id 
+            ORDER BY RAND() 
+            LIMIT 3";
+        $result_reviews = mysqli_query($conn, $query_reviews);
+
+        if (mysqli_num_rows($result_reviews) > 0):
+            while ($review = mysqli_fetch_assoc($result_reviews)):
+        ?>
+            <div class="card-review m-3 text-center">
+                <h5><?php echo htmlspecialchars($review['username']); ?></h5>
+                <p>"<?php echo htmlspecialchars($review['comment']); ?>"</p>
+                <p class="text-warning">Note : <?php echo $review['rating']; ?>/5</p>
+            </div>
+        <?php 
+            endwhile;
+        else:
+        ?>
+            <p class="text-center">Aucun témoignage pour le moment.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
     <!-- Call-to-Action -->
     <div class="container my-5 text-center">
-        <h2>Rejoignez notre communauté</h2>
+        <h2>Rejoignez notre communauté</h2><br>
         <p>Découvrez les meilleurs produits ou devenez un vendeur sur notre plateforme.</p>
         <a href="register.php" class="btn btn-success me-2">S'inscrire</a>
         <a href="collection.php" class="btn btn-primary">Voir le Catalogue</a>

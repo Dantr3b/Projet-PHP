@@ -110,126 +110,148 @@ if (!empty($query) || $seller_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recherche avec Filtres</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+        .result-item img {
+            max-width: 100px;
+            border-radius: 10px;
         }
-        .container {
-            padding: 20px;
+        .card-seller img {
+            width: 100px; 
+            height: 100px; 
+            object-fit: cover; 
+            border-radius: 50%; 
+            margin-bottom: 10px;
         }
-        .search-bar {
-            margin: 20px auto;
-            text-align: center;
+        .card-product img {
+            max-height: 150px;
+            object-fit: contain;
+        }
+        .card-product, .card-seller {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
         .filters {
-            margin: 20px auto;
-            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .results {
-            margin-top: 20px;
-        }
-        .result-item {
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .result-item img {
-            max-width: 50px;
-            border-radius: 5px;
+        .filters select, .filters input {
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Recherche et Filtres</h1>
+    
+<?php include("navbar.php"); ?>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Recherche et Filtres</h1>
 
         <!-- Barre de recherche -->
-        <div class="search-bar">
-            <form method="get" action="search.php">
-                <input type="text" name="query" placeholder="Rechercher un produit ou un vendeur" value="<?php echo htmlspecialchars($query); ?>" style="width: 300px; padding: 10px;">
-                <button type="submit" style="padding: 10px;">Rechercher</button>
-        </div>
+        <form method="get" action="search.php" class="input-group mb-4">
+            <input type="text" name="query" class="form-control" placeholder="Rechercher un produit ou un vendeur" value="<?php echo htmlspecialchars($query); ?>">
+            <button type="submit" class="btn btn-dark">Rechercher</button>
+        </form>
 
         <!-- Filtres -->
-        <div class="filters">
-            <h3>Filtres pour les Produits</h3>
-            <label for="category">Catégorie :</label>
-            <select name="category" id="category">
-                <option value="">-- Toutes les catégories --</option>
-                <?php foreach ($categories as $category): ?>
-                    <option value="<?php echo htmlspecialchars($category); ?>" <?php echo $category_filter === $category ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($category); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+        <div class="filters p-4 mb-4">
+            <form method="get" action="search.php">
+                <h3>Filtres pour les Produits</h3>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="category">Catégorie :</label>
+                        <select name="category" id="category" class="form-select">
+                            <option value="">-- Toutes les catégories --</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?php echo htmlspecialchars($category); ?>" <?php echo $category_filter === $category ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($category); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="min_price">Prix minimum (€) :</label>
+                        <input type="number" name="min_price" id="min_price" step="0.01" class="form-control" value="<?php echo htmlspecialchars($min_price); ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="max_price">Prix maximum (€) :</label>
+                        <input type="number" name="max_price" id="max_price" step="0.01" class="form-control" value="<?php echo htmlspecialchars($max_price); ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="vintage">Année :</label>
+                        <input type="number" name="vintage" id="vintage" min="1900" max="<?php echo date('Y'); ?>" class="form-control" value="<?php echo htmlspecialchars($vintage_filter); ?>">
+                    </div>
+                </div>
 
-            <label for="min_price">Prix minimum (€) :</label>
-            <input type="number" name="min_price" id="min_price" step="0.01" value="<?php echo htmlspecialchars($min_price); ?>">
-
-            <label for="max_price">Prix maximum (€) :</label>
-            <input type="number" name="max_price" id="max_price" step="0.01" value="<?php echo htmlspecialchars($max_price); ?>">
-
-            <label for="vintage">Année :</label>
-            <input type="number" name="vintage" id="vintage" min="1900" max="<?php echo date('Y'); ?>" value="<?php echo htmlspecialchars($vintage_filter); ?>">
-
-            <h3>Filtres pour les Vendeurs</h3>
-            <label for="seller_category">Catégorie de vendeur :</label>
-            <select name="seller_category" id="seller_category">
-                <option value="">-- Toutes les catégories --</option>
-                <option value="underground" <?php echo $seller_category === 'underground' ? 'selected' : ''; ?>>Underground (moins de 5 commandes)</option>
-                <option value="petit_commerce" <?php echo $seller_category === 'petit_commerce' ? 'selected' : ''; ?>>Petit commerce (5-50 commandes)</option>
-                <option value="pro" <?php echo $seller_category === 'pro' ? 'selected' : ''; ?>>Pro (plus de 50 commandes)</option>
-            </select>
-
-            <button type="submit" style="padding: 10px;">Appliquer les Filtres</button>
-        </form>
+                <h3 class="mt-4">Filtres pour les Vendeurs</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="seller_category">Catégorie de vendeur :</label>
+                        <select name="seller_category" id="seller_category" class="form-select">
+                            <option value="">-- Toutes les catégories --</option>
+                            <option value="underground" <?php echo $seller_category === 'underground' ? 'selected' : ''; ?>>Underground (moins de 5 commandes)</option>
+                            <option value="petit_commerce" <?php echo $seller_category === 'petit_commerce' ? 'selected' : ''; ?>>Petit commerce (5-50 commandes)</option>
+                            <option value="pro" <?php echo $seller_category === 'pro' ? 'selected' : ''; ?>>Pro (plus de 50 commandes)</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Appliquer les Filtres</button>
+            </form>
         </div>
 
         <!-- Résultats des produits -->
-        <div class="results">
-            <h2>Produits trouvés</h2>
-            <?php if (!empty($products)): ?>
-                <?php foreach ($products as $product): ?>
-                    <div class="result-item">
-                        <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>">
-                        <div>
-                            <p><strong><?php echo htmlspecialchars($product['name']); ?></strong></p>
-                            <p>Prix : <?php echo number_format($product['price'], 2); ?> €</p>
-                            <p>Catégorie : <?php echo htmlspecialchars($product['category']); ?></p>
-                            <p>Année : <?php echo htmlspecialchars($product['vintage']); ?></p>
-                            <a href="detail.php?id=<?php echo $product['id']; ?>">Voir les détails</a>
+        <div class="results mb-5">
+            <h2 class="mb-4">Produits trouvés</h2>
+            <div class="row">
+                <?php if (!empty($products)): ?>
+                    <?php foreach ($products as $product): ?>
+                        <div class="col-md-4 mb-4">
+                            <div class="card card-product p-3">
+                                <img src="uploads/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="card-img-top">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($product['name']); ?></h5>
+                                    <p class="card-text">Prix : <?php echo number_format($product['price'], 2); ?> €</p>
+                                    <p class="card-text">Catégorie : <?php echo htmlspecialchars($product['category']); ?></p>
+                                    <p class="card-text">Année : <?php echo htmlspecialchars($product['vintage']); ?></p>
+                                    <a href="detail.php?id=<?php echo $product['id']; ?>" class="btn btn-outline-primary w-100">Voir les détails</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Aucun produit trouvé pour la recherche "<?php echo htmlspecialchars($query); ?>".</p>
-            <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="text-center">Aucun produit trouvé pour la recherche "<?php echo htmlspecialchars($query); ?>".</p>
+                <?php endif; ?>
+            </div>
         </div>
 
         <!-- Résultats des vendeurs -->
-        <div class="results">
-            <h2>Vendeurs trouvés</h2>
-            <?php if (!empty($sellers)): ?>
-                <?php foreach ($sellers as $seller): ?>
-                    <div class="result-item">
-                        <img src="uploads/<?php echo htmlspecialchars(!empty($seller['photo']) ? $seller['photo'] : 'defaultpp.jpg'); ?>" alt="<?php echo htmlspecialchars($seller['username']); ?>">
-                        <div>
-                            <p><strong><?php echo htmlspecialchars($seller['username']); ?></strong></p>
-                            <p>Total des commandes : <?php echo htmlspecialchars($seller['total_orders']); ?></p>
-                            <a href="account.php?id=<?php echo $seller['id']; ?>">Voir le profil</a>
+        <div class="results mb-5">
+            <h2 class="mb-4">Vendeurs trouvés</h2>
+            <div class="row">
+                <?php if (!empty($sellers)): ?>
+                    <?php foreach ($sellers as $seller): ?>
+                        <div class="col-md-4 mb-4">
+                            <div class="card card-seller p-3">
+                                <img src="uploads/<?php echo htmlspecialchars(!empty($seller['photo']) ? $seller['photo'] : 'defaultpp.jpg'); ?>" 
+                                     alt="<?php echo htmlspecialchars($seller['username']); ?>" 
+                                     class="rounded-circle mx-auto d-block mb-3" style="width: 100px; height: 100px;">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($seller['username']); ?></h5>
+                                    <p class="card-text">Total des commandes : <?php echo htmlspecialchars($seller['total_orders']); ?></p>
+                                    <a href="account.php?id=<?php echo $seller['id']; ?>" class="btn btn-outline-primary w-100">Voir le profil</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Aucun vendeur trouvé pour la recherche "<?php echo htmlspecialchars($query); ?>".</p>
-            <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="text-center">Aucun vendeur trouvé pour la recherche "<?php echo htmlspecialchars($query); ?>".</p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
