@@ -45,15 +45,13 @@ $message = "Votre commande a été validée avec succès !";
             </div>
         </div>
 
-        
         <div class="text-center my-5">
             <a href="generate_invoice.php" class="btn btn-primary">Télécharger la facture</a>
         </div>
 
-
         <div class="text-center mt-4">
-            <a href="collection.php" class="btn btn-primary">Retourner au catalogue</a>
-            <a href="account.php" class="btn btn-dark">Consulter mon compte</a>
+            <a href="collection.php" onclick="clearCart()" class="btn btn-primary">Retourner au catalogue</a>
+            <a href="account.php" onclick="clearCart()" class="btn btn-dark">Consulter mon compte</a>
         </div>
     </div>
 
@@ -62,6 +60,18 @@ $message = "Votre commande a été validée avec succès !";
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fonction pour vider le panier
+        function clearCart() {
+            fetch('clear_cart.php')
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Failed to clear cart.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 
 </html>
