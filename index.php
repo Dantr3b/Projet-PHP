@@ -87,7 +87,7 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
     }
         .banner {
             margin-top: -15px;
-            background-image: url('uploads/Capture\ d’écran\ 2025-01-14\ à\ 12.31.19.png');
+            background-image: url('uploads/a-black-and-white-banner-for-an-e-commer_M1Yy9Oi8Td6vzRKjaZiVwA_YfoPLKc7REWFk6cjZ1GK7Q.jpeg');
             background-size: cover;
             background-position: center;
             height: 300px;

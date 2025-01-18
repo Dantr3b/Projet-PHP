@@ -73,5 +73,4 @@ $message = "Votre commande a été validée avec succès !";
         }
     </script>
 </body>
-
 </html>
