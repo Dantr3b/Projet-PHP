@@ -55,7 +55,6 @@ mysqli_stmt_bind_result($stmt, $most_ordered_article_name, $most_ordered_quantit
 mysqli_stmt_fetch($stmt);
 mysqli_stmt_close($stmt);
 
-// Vérification si des données sont retournées
 if (!$most_ordered_article_name) $most_ordered_article_name = "Aucun produit";
 if (!$most_ordered_quantity) $most_ordered_quantity = 0;
 
@@ -77,11 +76,32 @@ mysqli_stmt_bind_result($stmt, $highest_revenue_article_name, $highest_revenue_t
 mysqli_stmt_fetch($stmt);
 mysqli_stmt_close($stmt);
 
-// Vérification si des données sont retournées
 if (!$highest_revenue_article_name) $highest_revenue_article_name = "Aucun produit";
 if (!$highest_revenue_total) $highest_revenue_total = 0;
-?>
 
+// Récupération des ventes des 6 derniers mois
+$query = "
+    SELECT DATE_FORMAT(o.created_at, '%Y-%m') AS month, SUM(o.total_price) AS monthly_sales
+    FROM `order` o
+    JOIN article a ON o.article_id = a.id
+    WHERE a.author_id = ?
+    GROUP BY month
+    ORDER BY month ASC";
+$stmt = mysqli_prepare($conn, $query);
+mysqli_stmt_bind_param($stmt, "i", $seller_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+$months = [];
+$sales = [];
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $months[] = $row['month'];
+    $sales[] = $row['monthly_sales'];
+}
+
+mysqli_stmt_close($stmt);
+?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -96,9 +116,16 @@ if (!$highest_revenue_total) $highest_revenue_total = 0;
 
 <?php include("../navbar.php"); ?>
 
+
 <div class="container my-5">
     <h1 class="text-center mb-4">Tableau de bord du vendeur</h1>
 
+    <div class="text-center mt-4">
+            <a href="orders.php" class="btn btn-primary me-2">Gérer les commandes</a>
+            <a href="article.php" class="btn btn-secondary me-2">Gérer les articles</a>
+            <a href="../account.php" class="btn btn-dark">Mon compte</a>
+        </div>
+    </div>
     <?php if ($total_products_sold > 0): ?>
         <div class="row">
             <div class="col-md-6">
@@ -143,21 +170,29 @@ if (!$highest_revenue_total) $highest_revenue_total = 0;
                 </div>
             </div>
         </div>
+  <!-- Liens de navigation -->
 
         <!-- Section des graphiques -->
-        <div class="row mt-5">
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5 class="text-center mb-3">Répartition des ventes</h5>
-                    <canvas id="salesChart"></canvas>
-                </div>
+        <div class="row mt-5 justify-content-center">
+            <div class="col-md-3">
+            <div class="card p-3">
+                <h5 class="text-center mb-3">Répartition des ventes</h5>
+                <canvas id="salesChart"></canvas>
+            </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card p-3">
-                    <h5 class="text-center mb-3">Revenus générés</h5>
-                    <canvas id="revenueChart"></canvas>
-                </div>
+            <div class="col-md-3">
+            <div class="card p-3">
+                <h5 class="text-center mb-3">Revenus générés</h5>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            </div>
+
+            <div class="col-md-3">
+            <div class="card p-3">
+                <h5 class="text-center mb-3">Évolution des ventes</h5>
+                <canvas id="salesTrendChart"></canvas>
+            </div>
             </div>
         </div>
 
@@ -166,12 +201,6 @@ if (!$highest_revenue_total) $highest_revenue_total = 0;
             <p>Aucun produit vendu pour le moment.</p>
         </div>
     <?php endif; ?>
-
-    <div class="text-center mt-4">
-        <a href="orders.php" class="btn btn-primary me-2">Gérer les commandes</a>
-        <a href="article.php" class="btn btn-secondary me-2">Gérer les articles</a>
-        <a href="../account.php" class="btn btn-dark">Mon compte</a>
-    </div>
 </div>
 
 <script>
@@ -192,13 +221,26 @@ if (!$highest_revenue_total) $highest_revenue_total = 0;
         }]
     };
 
+    var trendData = {
+        labels: <?php echo json_encode($months); ?>,
+        datasets: [{
+            label: 'Ventes mensuelles (€)',
+            data: <?php echo json_encode($sales); ?>,
+            backgroundColor: ['#f39c12', '#ff5733', '#2ecc71', '#3498db', '#9b59b6', '#e74c3c'],
+            borderColor: '#333',
+            borderWidth: 1
+        }]
+    };
+
     // Initialisation des graphiques Chart.js
+
     var ctx1 = document.getElementById('salesChart').getContext('2d');
     var salesChart = new Chart(ctx1, {
         type: 'doughnut',
         data: salesData,
         options: {
-            responsive: true,
+            responsive: false,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom'
@@ -212,7 +254,8 @@ if (!$highest_revenue_total) $highest_revenue_total = 0;
         type: 'pie',
         data: revenueData,
         options: {
-            responsive: true,
+            responsive: false,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom'
@@ -220,8 +263,28 @@ if (!$highest_revenue_total) $highest_revenue_total = 0;
             }
         }
     });
+
+    var ctx3 = document.getElementById('salesTrendChart').getContext('2d');
+    var salesTrendChart = new Chart(ctx3, {
+        type: 'bar',
+        data: trendData,
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            }
+        }
+    });
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
