@@ -17,9 +17,19 @@ if (empty($_SESSION['cart'])) {
     exit();
 }
 
+// Récupération du solde de l'utilisateur
+$query_balance = "SELECT balance FROM User WHERE id = ?";
+$stmt_balance = mysqli_prepare($conn, $query_balance);
+mysqli_stmt_bind_param($stmt_balance, "i", $user_id);
+mysqli_stmt_execute($stmt_balance);
+$result_balance = mysqli_stmt_get_result($stmt_balance);
+$user_balance = mysqli_fetch_assoc($result_balance)['balance'];
+mysqli_stmt_close($stmt_balance);
+
 // Récupération des articles du panier
 $cart_items = [];
 $total_price = 0;
+$error = "";
 
 if (!empty($_SESSION['cart'])) {
     $ids = implode(',', array_keys($_SESSION['cart']));
@@ -43,7 +53,12 @@ if (!empty($_SESSION['cart'])) {
     }
 }
 
-// Traitement du formulaire de validation
+// Vérification si le solde est suffisant
+if ($user_balance < $total_price) {
+    $error = "Fonds insuffisants. Veuillez recharger votre solde.";
+}
+
+// Traitement du formulaire de validation de commande
 if ($_SERVER["REQUEST_METHOD"] === "POST" && empty($error)) {
     $address = trim($_POST['address']);
     $payment_method = trim($_POST['payment_method']);
@@ -51,7 +66,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && empty($error)) {
     if (empty($address) || empty($payment_method)) {
         $error = "Veuillez remplir tous les champs.";
     } else {
-        // Enregistrement de la commande
+        // Déduire le montant du solde utilisateur
+        $query_update_balance = "UPDATE User SET balance = balance - ? WHERE id = ?";
+        $stmt_update_balance = mysqli_prepare($conn, $query_update_balance);
+        mysqli_stmt_bind_param($stmt_update_balance, "di", $total_price, $user_id);
+        mysqli_stmt_execute($stmt_update_balance);
+        mysqli_stmt_close($stmt_update_balance);
+
+        // Enregistrement de la commande et mise à jour du stock
         foreach ($cart_items as $item) {
             $article_id = $item['id'];
             $quantity = $item['quantity'];
@@ -72,7 +94,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && empty($error)) {
             mysqli_stmt_close($stmt);
         }
 
-        // Rediriger vers une page de confirmation
+        // Vider le panier après la commande
+        // unset($_SESSION['cart']);
+
+        // Message de succès et redirection
+        $_SESSION['success'] = "Commande validée avec succès ! Votre solde a été mis à jour.";
         header("Location: confirmation.php");
         exit();
     }
@@ -96,8 +122,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && empty($error)) {
         <h2 class="text-center mb-4">Validation de commande</h2>
 
         <?php if (!empty($error)): ?>
-            <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+            <div class="alert alert-danger text-center"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
+
+        <!-- Affichage du solde utilisateur -->
+        <div class="mb-4 text-center">
+            <h4>Votre solde actuel</h4>
+            <p class="display-5 text-success"><?php echo number_format($user_balance, 2); ?> €</p>
+        </div>
 
         <!-- Liste des articles du panier -->
         <div class="mb-4">

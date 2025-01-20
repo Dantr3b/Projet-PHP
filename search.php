@@ -228,29 +228,32 @@ if (!empty($query) || $seller_category) {
 
         <!-- Résultats des vendeurs -->
         <div class="results mb-5">
-            <h2 class="mb-4">Vendeurs trouvés</h2>
-            <div class="row">
-                <?php if (!empty($sellers)): ?>
-                    <?php foreach ($sellers as $seller): ?>
-                        <div class="col-md-4 mb-4">
-                            <div class="card card-seller p-3">
-                                <img src="uploads/<?php echo htmlspecialchars(!empty($seller['photo']) ? $seller['photo'] : 'defaultpp.jpg'); ?>" 
-                                     alt="<?php echo htmlspecialchars($seller['username']); ?>" 
-                                     class="rounded-circle mx-auto d-block mb-3" style="width: 100px; height: 100px;">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($seller['username']); ?></h5>
-                                    <p class="card-text">Total des commandes : <?php echo htmlspecialchars($seller['total_orders']); ?></p>
-                                    <a href="account.php?id=<?php echo $seller['id']; ?>" class="btn btn-outline-primary w-100">Voir le profil</a>
-                                </div>
+    <h2 class="mb-4">Vendeurs trouvés</h2>
+    <div class="row">
+        <?php if (!empty($sellers)): ?>
+            <?php foreach ($sellers as $seller): ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card card-seller p-3">
+                        <a href="profile.php?id=<?php echo $seller['id']; ?>" class="text-decoration-none text-dark">
+                            <img src="uploads/<?php echo htmlspecialchars(!empty($seller['photo']) ? $seller['photo'] : 'defaultpp.jpg'); ?>" 
+                                alt="<?php echo htmlspecialchars($seller['username']); ?>" 
+                                class="rounded-circle mx-auto d-block mb-3" 
+                                style="width: 100px; height: 100px;">
+                            <div class="card-body text-center">
+                                <h5 class="card-title"><?php echo htmlspecialchars($seller['username']); ?></h5>
+                                <p class="card-text">Total des commandes : <?php echo htmlspecialchars($seller['total_orders']); ?></p>
+                                <a href="profile.php?id=<?php echo $seller['id']; ?>" class="btn btn-outline-primary w-100">Voir le profil</a>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p class="text-center">Aucun vendeur trouvé pour la recherche "<?php echo htmlspecialchars($query); ?>".</p>
-                <?php endif; ?>
-            </div>
-        </div>
+                        </a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-center">Aucun vendeur trouvé pour la recherche "<?php echo htmlspecialchars($query); ?>".</p>
+        <?php endif; ?>
     </div>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -7,11 +7,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <?php 
-    include("../navbar.php"); 
-    require_once("../config.php");
-    session_start();
+    <?php
+    // Vérifie si la session est déjà démarrée avant de l'initialiser
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
+    require_once("../config.php"); // Connexion à la base de données
+    include("../navbar.php"); 
+            
     // Vérification de l'authentification et du rôle "seller"
     if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'seller') {
         header("Location: ../login.php");

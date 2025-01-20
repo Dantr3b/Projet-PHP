@@ -1,11 +1,14 @@
 <?php
+// Vérifie si la session est déjà démarrée avant de l'initialiser
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once("config.php"); // Connexion à la base de données
-session_start();
 
 // Vérification et récupération de l'ID de l'article
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -102,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review']) && $
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
     <?php include("navbar.php"); ?>
 
     <div class="container my-5">

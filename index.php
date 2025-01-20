@@ -66,6 +66,10 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: none;
+            border-radius: 5px;
+            width: 85%;
+            margin: 0 auto;
+            
         }
 
         .card:hover {
@@ -74,9 +78,11 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
         }
 
         .card img {
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
             object-fit: cover;
+            height: 300px;
+
         }
 
         .product-card img {
@@ -100,7 +106,7 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
         .centered-section {
             text-align: center;
         }
-
+        
         .centered-section .row {
             justify-content: center;
         }
@@ -135,7 +141,7 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
 
     <!-- Produits les plus vendus -->
     <div class="container my-5">
-        <h2 class="text-center my-4">Produits les plus vendus</h2><br>
+        <h2 class="text-center my-4">Nos derniers produits vendus</h2><br>
         <div class="row">
             <?php while ($product = mysqli_fetch_assoc($result_top_products)): ?>
                 <div class="col-md-4 mb-4">
