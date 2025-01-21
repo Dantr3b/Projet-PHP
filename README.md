@@ -67,6 +67,10 @@ if ($db->connect_error) {
 }
 ?>
 ```
+4. **Ajouter des utilisateurs** :
+Ajoutez un utilisateur avec le rôle "Admin" et un autre avec le rôle "Seller". Ces utilisateurs auront respectivement accès aux pages destinées aux administrateurs et aux vendeurs.
+
+
 
 ## **Structure des pages**
 
