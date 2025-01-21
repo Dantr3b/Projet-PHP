@@ -38,6 +38,7 @@ $result_orders = mysqli_stmt_get_result($stmt_orders);
 }
 
 // Mettre à jour le profil
+// Gestion de la mise à jour de la photo de profil
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_username = trim($_POST['username']);
     $email = trim($_POST['email']);
@@ -51,6 +52,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (!empty($password) && $password !== $confirm_password) {
         $error = "Les mots de passe ne correspondent pas.";
     } else {
+        // Gestion de la photo de profil
+        if (!empty($_FILES['photo']['name'])) {
+            $target_dir = "uploads/";
+            $image_name = basename($_FILES['photo']['name']);
+            $image_extension = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
+
+            $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array($image_extension, $allowed_extensions)) {
+                $new_image_name = "profile_" . $id . "_" . time() . "." . $image_extension;
+                $target_file = $target_dir . $new_image_name;
+
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
+                    // Met à jour la photo de profil dans la base de données
+                    $update_photo_query = "UPDATE User SET photo = ? WHERE id = ?";
+                    $stmt_photo = mysqli_prepare($conn, $update_photo_query);
+                    mysqli_stmt_bind_param($stmt_photo, "si", $new_image_name, $id);
+                    mysqli_stmt_execute($stmt_photo);
+                    mysqli_stmt_close($stmt_photo);
+
+                    // Mise à jour de la session
+                    $_SESSION['photo'] = $new_image_name;
+                    $success = "Photo de profil mise à jour avec succès.";
+                } else {
+                    $error = "Erreur lors du téléchargement de l'image.";
+                }
+            } else {
+                $error = "Format d'image non pris en charge. Formats autorisés: JPG, JPEG, PNG, GIF.";
+            }
+        }
+
+        // Mise à jour des autres informations
         $update_query = "UPDATE User SET username = ?, email = ?";
         $types = "ss";
         $params = [$new_username, $email];
@@ -78,6 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_stmt_close($stmt);
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -124,33 +158,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="card-body text-center">
                         <h5 class="card-title">Informations du Profil</h5>
                         <form method="post" action="account.php" enctype="multipart/form-data">
-                            <label for="photoInput">
-                                <img src="uploads/<?php echo htmlspecialchars($user['photo'] ?? 'defaultpp.png'); ?>" 
-                                     alt="Photo de profil" class="profile-picture my-3" id="profilePicture">
-                            </label>
-                            <input type="file" name="photo" id="photoInput" class="hidden-input" accept="image/*">
-                            
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Nom d'utilisateur</label>
-                                <input type="text" name="username" id="username" class="form-control" 
-                                    value="<?php echo isset($user['username']) ? htmlspecialchars($user['username']) : ''; ?>" required>
-                            </div>
+                        <label for="photoInput">
+                            <img src="<?php echo !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo']) : 'uploads/defaultpp.png'; ?>" 
+                                alt="Photo de profil" class="profile-picture my-3" id="profilePicture">
+                        </label>
+                        <input type="file" name="photo" id="photoInput" class="hidden-input" accept="image/*">
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" name="username" id="username" class="form-control" 
+                                value="<?php echo isset($user['username']) ? htmlspecialchars($user['username']) : ''; ?>" required>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Adresse e-mail</label>
-                                <input type="email" name="email" id="email" class="form-control" 
-                                       value="<?php echo htmlspecialchars($user['email']); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Nouveau mot de passe</label>
-                                <input type="password" name="password" id="password" class="form-control">
-                            </div>
-                            <div class="mb-3">
-                                <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
-                                <input type="password" name="confirm_password" id="confirm_password" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-dark w-100">Mettre à jour</button>
-                        </form>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Adresse e-mail</label>
+                            <input type="email" name="email" id="email" class="form-control" 
+                                value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Nouveau mot de passe</label>
+                            <input type="password" name="password" id="password" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                            <input type="password" name="confirm_password" id="confirm_password" class="form-control">
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100">Mettre à jour</button>
+                    </form>
                     </div>
                 </div>
             </div>

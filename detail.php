@@ -144,10 +144,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review']) && $
         <div class="row">
             <!-- Colonne pour l'image -->
             <div class="col-md-6">
-                <img src="<?php echo htmlspecialchars(str_replace('../', '', $article['image'] ?? "")); ?>" 
-                     alt="<?php echo htmlspecialchars($article['name']); ?>" 
-                     class="img-fluid rounded">
+                <div class="ratio ratio-4x3">
+                    <img src="<?php echo htmlspecialchars(str_replace('../', '', $article['image'] ?? "")); ?>" 
+                        alt="<?php echo htmlspecialchars($article['name']); ?>" 
+                        class="img-fluid rounded shadow-sm object-fit-cover" 
+                        style="height: 600px;">
+                </div>
             </div>
+
 
             <!-- Colonne pour les détails -->
             <div class="col-md-6">
@@ -218,13 +222,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review']) && $
         </div>
     </div>
 </div>
-
-
-               
-
-        
         <!-- Section des commentaires et notes -->
         <div class="mt-4">
+            <br><br><br>
             <h3 class="text-center">Commentaires et Notes</h3><br><br>
             <?php if (!empty($reviews)): ?>
             <?php foreach ($reviews as $review): ?>
