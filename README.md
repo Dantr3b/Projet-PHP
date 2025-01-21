@@ -76,27 +76,25 @@ Ajoutez un utilisateur avec le rôle "Admin" et un autre avec le rôle "Seller".
 
 | **Page**                     | **Description**                           | **Statut**    |
 |------------------------------|-------------------------------------------|---------------|
-| `/home`                      | Page d'accueil, affichage des articles    | 🎨 Ajouter du style    |
+| `/home`                      | Page d'accueil, affichage des articles    | ✅ Terminé    |
 | `/register`                  | Page d'inscription                        | ✅ Terminé   |
 | `/login`                     | Page de connexion                         | ✅ Terminé   |
-| `/catalogue`                 | Liste des articles avec filtres           | 🎨 Ajouter du style    |
-| `/detail?id=ID`              | Page détaillée d'un produit               | 🎨 Ajouter du style     |
-| `/cart`                      | Affichage et gestion du panier            | 🚧 Ajouter du style    |
-| `/cart/validate`             | Validation des informations de commande   | 🚧 Ajouter du style   |
-| `/favorites`                 | Liste des articles favoris                | 🎨 Ajouter du style    |
+| `/catalogue`                 | Liste des articles avec filtres           | ✅ Terminé    |
+| `/detail?id=ID`              | Page détaillée d'un produit               | ✅ Terminé     |
+| `/cart`                      | Affichage et gestion du panier            | ✅ Terminé    |
+| `/cart/validate`             | Validation des informations de commande   | ✅ Terminé  |
+| `/favorites`                 | Liste des articles favoris                | ✅ Terminé    |
 | `/account`                   | Gestion du compte utilisateur             | ✅ Terminé    |
-| `sellers/article`            | Liste des articles proposer par le vendeur| 🎨 Ajouter du style    |
-| `sellers/sell`               | Formulaire de création d'article (vendeur)| 🎨 Ajouter du style    |
-| `/edit?id=ID`                | Modification/suppression d'article        | 🎨 Ajouter du style    |
-| `/seller/orders`             | Liste des commandes reçues par le vendeur | 🎨 Ajouter du style    |
-| `/seller/dashboard`          | Tableau de bord administrateur            | 🎨 Ajouter du style    |
-| `/admin/dashboard`           | Tableau de bord administrateur            | 🚧 À faire    |
-| `/admin/users`               | Gestion des utilisateurs                  | 🎨 Ajouter du style    |
-| `/admin/articles`            | Gestion des articles                      | 🚧 Ajouter du style    |
-| `/search`                    | Recherche avancée multi-critères          | 🚧 Ajouter du style   |
-| `/giftboxes`                 | Page des coffrets cadeaux                 | 🚧 À faire    |
+| `sellers/article`            | Liste des articles proposer par le vendeur| ✅ Terminé    |
+| `sellers/sell`               | Formulaire de création d'article (vendeur)| ✅ Terminé    |
+| `/edit?id=ID`                | Modification/suppression d'article        | ✅ Terminé    |
+| `/seller/orders`             | Liste des commandes reçues par le vendeur | ✅ Terminé   |
+| `/seller/dashboard`          | Tableau de bord administrateur            | ✅ Terminé    |
+| `/admin/dashboard`           | Tableau de bord administrateur            | ✅ Terminé   |
+| `/admin/users`               | Gestion des utilisateurs                  | ✅ Terminé   |
+| `/admin/articles`            | Gestion des articles                      | ✅ Terminé    |
+| `/search`                    | Recherche avancée multi-critères          | ✅ Terminé   |
 | `/contact`                   | Formulaire de contact                     | 🚧 À faire    |
-| `/404`                       | Page d'erreur 404                         | 🚧 À faire    |
 
 ---
 
