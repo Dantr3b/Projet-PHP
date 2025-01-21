@@ -117,7 +117,7 @@ mysqli_stmt_close($stmt);
 <?php include("../navbar.php"); ?>
 
 
-<div class="container my-5">
+<div class="container my-5 ">
     <h1 class="text-center mb-4">Tableau de bord du vendeur</h1>
 
     <div class="text-center mt-4">
@@ -127,47 +127,47 @@ mysqli_stmt_close($stmt);
         </div>
     </div>
     <?php if ($total_products_sold > 0): ?>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card border-dark mb-3">
-                    <div class="card-header bg-dark text-white">Produits vendus</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Total des produits vendus</h5>
-                        <p class="card-text"><?php echo $total_products_sold; ?></p>
-                    </div>
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+            <div class="card border-dark mb-3">
+                <div class="card-header bg-dark text-white">Produits vendus</div>
+                <div class="card-body text-center">
+                <h5 class="card-title">Total des produits vendus</h5>
+                <p class="card-text"><?php echo $total_products_sold; ?></p>
                 </div>
             </div>
+            </div>
 
-            <div class="col-md-6">
-                <div class="card border-primary mb-3">
-                    <div class="card-header bg-primary text-white">Produit le plus commandé</div>
-                    <div class="card-body">
-                        <h5 class="card-title"><?php echo $most_ordered_article_name; ?></h5>
-                        <p class="card-text"><?php echo $most_ordered_quantity; ?> commandes</p>
-                    </div>
+            <div class="col-md-5">
+            <div class="card border-primary mb-3">
+                <div class="card-header bg-primary text-white">Produit le plus commandé</div>
+                <div class="card-body text-center">
+                <h5 class="card-title"><?php echo $most_ordered_article_name; ?></h5>
+                <p class="card-text"><?php echo $most_ordered_quantity; ?> commandes</p>
                 </div>
+            </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card border-success mb-3">
-                    <div class="card-header bg-success text-white">Produit le plus rentable</div>
-                    <div class="card-body">
-                        <h5 class="card-title"><?php echo $highest_revenue_article_name; ?></h5>
-                        <p class="card-text">Revenu total : <?php echo number_format($highest_revenue_total, 2); ?> €</p>
-                    </div>
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+            <div class="card border-success mb-3">
+                <div class="card-header bg-success text-white">Produit le plus rentable</div>
+                <div class="card-body text-center">
+                <h5 class="card-title"><?php echo $highest_revenue_article_name; ?></h5>
+                <p class="card-text">Revenu total : <?php echo number_format($highest_revenue_total, 2); ?> €</p>
                 </div>
             </div>
+            </div>
 
-            <div class="col-md-6">
-                <div class="card border-warning mb-3">
-                    <div class="card-header bg-warning text-white">Revenu total</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Revenu total généré</h5>
-                        <p class="card-text"><?php echo number_format($total_revenue, 2); ?> €</p>
-                    </div>
+            <div class="col-md-5">
+            <div class="card border-warning mb-3">
+                <div class="card-header bg-warning text-white">Revenu total</div>
+                <div class="card-body text-center">
+                <h5 class="card-title">Revenu total généré</h5>
+                <p class="card-text"><?php echo number_format($total_revenue, 2); ?> €</p>
                 </div>
+            </div>
             </div>
         </div>
   <!-- Liens de navigation -->

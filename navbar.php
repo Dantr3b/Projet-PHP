@@ -54,6 +54,7 @@
                     <li class="nav-item"><a class="nav-link" href="/Projet-PHP/login.php">Connexion</a></li>
                     <li class="nav-item"><a class="nav-link" href="/Projet-PHP/register.php">Inscription</a></li>
                 <?php else: ?>
+                    <li class="nav-item"><a class="nav-link" href="/Projet-PHP/favoris.php">Favoris</a></li>
                     <li class="nav-item"><a class="nav-link" href="/Projet-PHP/cart.php">Panier</a></li>
                     <?php if ($usernavbar['role'] === 'seller'): ?>
                         <li class="nav-item"><a class="nav-link" href="/Projet-PHP/sellers/dashboard.php">Dashboard</a></li>

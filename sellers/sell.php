@@ -36,35 +36,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $author_id = $_SESSION['id']; // ID de l'auteur (vendeur connecté)
 
     // Vérifiez que le dossier "uploads" existe et est accessible
-    $upload_dir = "../uploads/";
+    $upload_dir = '../uploads/';
     if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0777, true); // Crée le dossier s'il n'existe pas
+        if (!mkdir($upload_dir, 0777, true)) {
+            $error = "Impossible de créer le dossier des uploads.";
+        }
     }
 
-    // Gestion de l'image
-    if (!empty($_FILES['image']['name'])) {
-        $image_name = basename($_FILES['image']['name']);
-        $target_path = $upload_dir . time() . "_" . $image_name;
+    if (empty($error)) {
+        // Gestion de l'image
+        if (!empty($_FILES['image']['name'])) {
+            $image_name = basename($_FILES['image']['name']);
+            $target_path = $upload_dir . time() . "_" . $image_name;
 
-        $file_type = strtolower(pathinfo($target_path, PATHINFO_EXTENSION));
-        if (!in_array($file_type, ['jpg', 'jpeg', 'png', 'gif'])) {
-            $error = "Seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés.";
-        } elseif ($_FILES['image']['error'] !== 0) {
-            $error = "Erreur lors du téléchargement de l'image : Code " . $_FILES['image']['error'];
-        } elseif (!move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-            $error = "Erreur lors du téléchargement de l'image. Vérifiez les permissions du dossier.";
+
+            $file_type = strtolower(pathinfo($target_path, PATHINFO_EXTENSION));
+
+            if (!in_array($file_type, ['jpg', 'jpeg', 'png', 'gif'])) {
+                $error = "Seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés.";
+            } elseif ($_FILES['image']['error'] !== 0) {
+                $error = "Erreur lors du téléchargement de l'image : Code " . $_FILES['image']['error'];
+            } elseif (!is_writable($upload_dir)) {
+                $error = "Le dossier 'uploads' n'est pas accessible en écriture.";
+            } elseif (!move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
+                $error = "Erreur lors du téléchargement de l'image. Vérifiez les permissions du dossier.";
+            }
+        } else {
+            $error = "Veuillez sélectionner une image pour l'article.";
         }
-    } else {
-        $error = "Veuillez sélectionner une image pour l'article.";
     }
 
     // Validation des autres champs
-    if (empty($name) || empty($description) || empty($price) || empty($category) || empty($vintage) || empty($region)) {
-        $error = "Tous les champs requis doivent être remplis.";
-    } elseif (!in_array($category, $categories)) {
-        $error = "La catégorie sélectionnée est invalide.";
-    } elseif ($price <= 0 || $stock < 0) {
-        $error = "Le prix doit être supérieur à 0 et le stock ne peut pas être négatif.";
+    if (empty($error)) {
+        if (empty($name) || empty($description) || empty($price) || empty($category) || empty($vintage) || empty($region)) {
+            $error = "Tous les champs requis doivent être remplis.";
+        } elseif (!in_array($category, $categories)) {
+            $error = "La catégorie sélectionnée est invalide.";
+        } elseif ($price <= 0 || $stock < 0) {
+            $error = "Le prix doit être supérieur à 0 et le stock ne peut pas être négatif.";
+        }
     }
 
     // Insertion dans la base de données si aucune erreur
@@ -149,9 +159,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="col-md-12">
-                <label for="image" class="form-label">Image de l'article (JPG, JPEG, PNG, GIF)</label>
-                <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
-            </div>
+    <label for="image" class="form-label">Image de l'article (JPG, JPEG, PNG, GIF)</label>
+    <input type="file" name="image" id="image" class="form-control" accept="image/*" required onchange="previewImage(event)">
+</div>
+
+<!-- Conteneur pour l'aperçu de l'image -->
+<div class="col-md-12 text-center mt-3">
+    <img id="imagePreview" src="" alt="Aperçu de l'image" class="img-fluid d-none" style="max-height: 300px;">
+</div>
+
+<script>
+function previewImage(event) {
+    var input = event.target;
+    var reader = new FileReader();
+
+    reader.onload = function() {
+        var imgElement = document.getElementById('imagePreview');
+        imgElement.src = reader.result;
+        imgElement.classList.remove('d-none');  // Affiche l'image si elle est cachée
+    };
+
+    if (input.files && input.files[0]) {
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+
 
             <div class="col-12 text-center">
                 <button type="submit" class="btn btn-dark w-100">Ajouter l'article</button>

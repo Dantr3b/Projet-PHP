@@ -138,7 +138,10 @@ $result_top_sellers = mysqli_query($conn, $query_top_sellers);
             <button type="submit" class="btn btn-dark">Rechercher</button>
         </form>
     </div>
-
+        <!-- Bouton Voir la Collection -->
+        <div class="container my-5 text-center">
+            <a href="collection.php" class="btn btn-lg btn-dark btn-custom">Voir le Catalogue</a>
+        </div>
     <!-- Produits les plus vendus -->
     <div class="container my-5">
         <h2 class="text-center my-4">Nos derniers produits vendus</h2><br>
