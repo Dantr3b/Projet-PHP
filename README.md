@@ -70,7 +70,11 @@ if ($db->connect_error) {
 4. **Ajouter des utilisateurs** :
 Ajoutez un utilisateur avec le rôle "Admin" et un autre avec le rôle "Seller". Ces utilisateurs auront respectivement accès aux pages destinées aux administrateurs et aux vendeurs.
 
-
+5. **Précaution pour le mot de passe oublié** :
+Quand un mot de passe est oublié, on indique une adresse mail est ça envoit un mot de passe temporaire (voir image ci dessous). Après la connexion avec le mot de passe temporaire une page s'ouvre pour rechanger son mot de passe.
+Seulement, l'envoi sur une vrai boite mail (gmail, outlook etc.) demande des ressources que l'on ne peut pas utilisé a cette échelle, donc, on a redirigé pour nous sur Mailtrap qui permet avec un les codes SMTP de pouvoir attraper le mot de passe, pour prouvé que cela marche bien.
+<br>
+<img width="400" alt="Capture d’écran 2025-01-24 à 16 50 54" src="https://github.com/user-attachments/assets/b9c13ef1-fede-4add-bc41-1349fb2f411d" />
 
 ## **Structure des pages**
 
@@ -94,7 +98,6 @@ Ajoutez un utilisateur avec le rôle "Admin" et un autre avec le rôle "Seller".
 | `/admin/users`               | Gestion des utilisateurs                  | ✅ Terminé   |
 | `/admin/articles`            | Gestion des articles                      | ✅ Terminé    |
 | `/search`                    | Recherche avancée multi-critères          | ✅ Terminé   |
-| `/contact`                   | Formulaire de contact                     | 🚧 À faire    |
 
 ---
 
